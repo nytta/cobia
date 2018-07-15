@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package lam.cobia.remoting;
+option java_package = "lam.cobia.remoting";
+option java_outer_classname = "Request2Proto";
+
+message Request2{
+	required sint64 id = 1;
+	required string interfaceName = 2;
+	required string method = 3;
+	required string dataClassName = 4;
+	optional bytes data = 5;
+}
