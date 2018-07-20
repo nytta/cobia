@@ -12,6 +12,7 @@ import lam.cobia.rpc.Consumer;
 public class JdkConsumerProxyFactory implements ConsumerProxyFactory {
     @Override
     public <T> T getConsumerProxy(Consumer<T> t) {
+
         return null;
     }
 }
