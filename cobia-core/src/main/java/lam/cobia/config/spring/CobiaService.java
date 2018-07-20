@@ -3,10 +3,10 @@ package lam.cobia.config.spring;
 import java.util.ArrayList;
 import java.util.List;
 
+import lam.cobia.proxy.ProviderProxyFactory;
 import lam.cobia.rpc.Exporter;
 import lam.cobia.rpc.Protocol;
 import lam.cobia.rpc.Provider;
-import lam.cobia.rpc.proxy.ProxyFactory;
 import lam.cobia.spi.ServiceFactory;
 
 /**
@@ -21,13 +21,16 @@ public class CobiaService implements Service{
 	
 	private Protocol protocol = ServiceFactory.takeDefaultInstance(Protocol.class);
 	
-	private ProxyFactory proxyFactory = ServiceFactory.takeDefaultInstance(ProxyFactory.class);
+	//private ProxyFactory proxyFactory = ServiceFactory.takeDefaultInstance(ProxyFactory.class);
+
+	private ProviderProxyFactory providerProxyFactory = ServiceFactory.takeDefaultInstance(ProviderProxyFactory.class);
 	
 	private final List<Exporter<?>> exporters = new ArrayList<Exporter<?>>();
 	
 	@Override
 	public <T> void export(T ref, Class<T> clazz) {
-		Provider<T> provider = proxyFactory.getProvider(ref, clazz);
+		//Provider<T> provider = proxyFactory.getProvider(ref, clazz);
+		Provider<T> provider = providerProxyFactory.getProvider(ref, clazz);
 		Exporter<T> exporter = protocol.export(provider);
 		exporters.add(exporter);
 	}
