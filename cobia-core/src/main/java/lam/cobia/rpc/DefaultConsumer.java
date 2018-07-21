@@ -18,17 +18,17 @@ import lam.cobia.remoting.Response;
 */
 public class DefaultConsumer<T> extends AbstractConsumer<T>{
 	
-	private Client[] clients;
+	private Client client;
 
-	public DefaultConsumer(Class<T> clazz, Client[] clients) {
+	public DefaultConsumer(Class<T> clazz, Client client) {
 		super(clazz);
-		this.clients = clients;
+		this.client = client;
 	}
 
 	@Override
 	protected Result doInvoke(Invocation invocation) {
 		//select one of clients to invoke the invocation
-		Client client = clients[0];
+		//Client client = client;
 		if (client.isClose()) {
 			throw new CobiaException("client(to server " + NetUtil.parseToString(client.getServerAddress()) + ") has been closed.");
 		}
@@ -61,7 +61,7 @@ public class DefaultConsumer<T> extends AbstractConsumer<T>{
 	
 	@Override
 	public void close() {
-		for (Client client : clients) {
+		if (client != null) {
 			client.close();
 		}
 	}

@@ -1,11 +1,16 @@
 package lam.cobia.rpc;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import lam.cobia.cluster.Cluster;
+import lam.cobia.cluster.RandomLoadBalanceCluster;
 import lam.cobia.core.constant.Constant;
+import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.remoting.ChannelHandler;
 import lam.cobia.remoting.Client;
@@ -26,8 +31,6 @@ import lam.cobia.remoting.transport.netty.NettyServer;
 public class DefaultProtocol implements Protocol{
 
 	private final Object sharedObject;
-
-	//private ConcurrentMap<Invoker<?>, Object> invokerMap;
 	
 	private ConcurrentMap<Consumer<?>, Object> consumerMap;
 	
@@ -37,25 +40,17 @@ public class DefaultProtocol implements Protocol{
 	
 	private ConcurrentMap<Integer, lam.cobia.remoting.transport.netty.NettyServer> nettyMap;
 	
-	private ConcurrentMap<InetSocketAddress, lam.cobia.remoting.Client[]> clientsMap;
+	private ConcurrentMap<InetSocketAddress, lam.cobia.remoting.Client> clientsMap;
 	
 	public DefaultProtocol() {
 		this.sharedObject = new Object();
-		//this.invokerMap = new ConcurrentHashMap<Invoker<?>, Object>();
 		this.consumerMap = new ConcurrentHashMap<Consumer<?>, Object>();
 		this.exporterMap = new ConcurrentHashMap<String, Exporter<?>>();
 		this.serverMap = new ConcurrentHashMap<String, ExchangeServer>();
 		this.nettyMap = new ConcurrentHashMap<Integer, lam.cobia.remoting.transport.netty.NettyServer>();
-		this.clientsMap = new ConcurrentHashMap<InetSocketAddress, lam.cobia.remoting.Client[]>();
+		this.clientsMap = new ConcurrentHashMap<InetSocketAddress, lam.cobia.remoting.Client>();
 	}
 
-	/*private static class DefaultProtocolHolder {
-		private static DefaultProtocol INSTANCE = new DefaultProtocol(); 
-	}
-	
-	public static DefaultProtocol getInstance() {
-		return DefaultProtocolHolder.INSTANCE;
-	}*/
 	
 	@Override
 	public <T> Exporter<T> export(Provider<T> provider) {
@@ -72,15 +67,30 @@ public class DefaultProtocol implements Protocol{
 	@Override
 	public <T> Consumer<T> refer(Class<T> clazz) {
 		//create DefaultInvoker<T> object with tcp client[]
+
+		//Class<T> clazz ->  List<HostAndPort>
+		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
+		List<HostAndPort> list = getHostAndPorts(clazz);
+		for (HostAndPort hap : list) {
+			Consumer<T> consumer = new DefaultConsumer<T>(clazz, getClient(hap));
+			consumerMap.put(consumer, sharedObject);
+			consumers.add(consumer);
+		}
+		Cluster<T> cluster = new RandomLoadBalanceCluster<T>(clazz, consumers);
+		return cluster;
+	}
+
+	private List<HostAndPort> getHostAndPorts(Class<?> clazz) {
+		//server host and port temporarily,
+		//It will registry by zookeeper in the future.
+		//@TODO
 		String serverHost = ParameterUtil.getParameter(Constant.KEY_SERVER_HOST, Constant.DEFAULT_SERVER_HOSTNAME);
 		int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
-		
-		//DefaultInvoker<T> invoker = new DefaultInvoker<T>(clazz, getClients(clazz));
-		//ProtoBufInvoker<T> invoker = new ProtoBufInvoker<T>(clazz, getClients(serverHost, port));
-		//invokerMap.put(invoker, sharedObject);
-		Consumer<T> consumer = new DefaultConsumer<T>(clazz, getClients(serverHost, port));
-		consumerMap.put(consumer, sharedObject);
-		return consumer;
+		List<HostAndPort> list = new ArrayList<HostAndPort>();
+		HostAndPort hap = new HostAndPort()
+				.setHost(serverHost).setPort(port);
+		list.add(hap);
+		return list;
 	}
 	
 	private void openServer(Provider<?> provider) {
@@ -108,26 +118,24 @@ public class DefaultProtocol implements Protocol{
 		return server;
 	}
 	
-	private Client[] getClients(String serverHost, int port) {
+	private Client getClient(HostAndPort hap) {
+		String serverHost = hap.getHost();
+		int port = hap.getPort();
 		InetSocketAddress remoteAddress = new InetSocketAddress(serverHost, port);
 		boolean clientIsShare = ParameterUtil.getParameterBoolean(Constant.KEY_CLIENT_IS_SHARE, Constant.DEFAULT_CLIENT_IS_SHARE);
 		if (clientIsShare) {
-			Client[] clients = clientsMap.get(new InetSocketAddress(serverHost, port));
-			if (clients == null) {
-				NettyClient client = new NettyClient(remoteAddress);
-				clients = new Client[] {client};
-				clientsMap.putIfAbsent(remoteAddress, clients);
+			Client client = clientsMap.get(new InetSocketAddress(serverHost, port));
+			if (client == null) {
+				client = new NettyClient(remoteAddress);
+				clientsMap.putIfAbsent(remoteAddress, client);
 			}
-			return clients;
+			return client;
 		}
-		return new Client[] {new NettyClient(remoteAddress)};
+		return new NettyClient(remoteAddress);
 	}
 
 	@Override
 	public void close() {
-		/*for (Invoker<?> invoker : invokerMap.keySet()) {
-			invoker.close();
-		}*/
 		for (Consumer<?> consumer : consumerMap.keySet()) {
 			consumer.close();
 		}
