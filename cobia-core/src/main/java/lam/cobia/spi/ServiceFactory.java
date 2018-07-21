@@ -32,16 +32,6 @@ public class ServiceFactory {
 	
 	private static Map<Class<?>, Map<String, Object>> map = new WeakHashMap<Class<?>, Map<String, Object>>();
 	
-	/*public static <T> T build(Class<T> clazz) {
-		ServiceLoader<T> serviceLoader = ServiceLoader.load(clazz);
-		Iterator<T> iter = serviceLoader.iterator();
-		while (iter.hasNext()) {
-			T t = iter.next();
-			return t;
-		}
-		throw new IllegalStateException("Can not find instance of " + clazz.getName() + ".");
-	}*/
-	
 	public static <T> T takeDefaultInstance(Class<T> serviceTypeClass) {
 		Spiable spi = checkAndGet(serviceTypeClass);
 		
