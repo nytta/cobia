@@ -48,5 +48,54 @@ public abstract class AbstractCluster<T> implements Cluster<T>{
         }
     }
 
+    protected List<Consumer<T>> getConsumers() {
+        return this.consumers;
+    }
+
     public abstract Result doInvoke(Invocation invocation);
+
+    private void invokeIllegal() {
+        throw new IllegalStateException("This method can not be called.");
+    }
+
+    @Override
+    public void setParam(String key, Object value) {
+        invokeIllegal();
+    }
+
+    @Override
+    public String getParam(String key) {
+        invokeIllegal();
+        return null;
+    }
+
+    @Override
+    public String getParam(String key, String defaultValue) {
+        invokeIllegal();
+        return null;
+    }
+
+    @Override
+    public int getParamInt(String key) {
+        invokeIllegal();
+        return 0;
+    }
+
+    @Override
+    public int getParamInt(String key, int defaultValue) {
+        invokeIllegal();
+        return 0;
+    }
+
+    @Override
+    public boolean getParamBoolean(String key) {
+        invokeIllegal();
+        return false;
+    }
+
+    @Override
+    public boolean getParamBoolean(String key, boolean defaultValue) {
+        invokeIllegal();
+        return false;
+    }
 }

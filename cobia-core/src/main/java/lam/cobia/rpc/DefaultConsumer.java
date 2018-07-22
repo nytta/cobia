@@ -8,6 +8,9 @@ import lam.cobia.remoting.DefaultFuture;
 import lam.cobia.remoting.Request2;
 import lam.cobia.remoting.Response;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
 * <p>
 * cobia
@@ -65,5 +68,7 @@ public class DefaultConsumer<T> extends AbstractConsumer<T>{
 			client.close();
 		}
 	}
+
+
 
 }

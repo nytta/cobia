@@ -1,5 +1,6 @@
 package lam.cobia.rpc;
 
+import lam.cobia.core.util.Parameterable;
 import lam.cobia.spi.Spiable;
 
 import java.io.Closeable;
@@ -12,7 +13,7 @@ import java.io.Closeable;
 * @date 2018年7月6日
 * @versio 1.0
 */
-public interface Consumer<T> extends Closeable{
+public interface Consumer<T> extends Parameterable {
 	
 	public String getKey();
 	

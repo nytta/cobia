@@ -1,4 +1,7 @@
 package lam.cobia.core.util;
+
+import java.util.Map;
+
 /**
 * <p>
 * cobia
@@ -8,6 +11,15 @@ package lam.cobia.core.util;
 * @version 1.0
 */
 public class ParameterUtil {
+
+	public static String getConfigParameter(String key, Map<String, Object> map) {
+		Object value = map.get(key);
+		if (value == null) {
+			return getParameter(key);
+		}
+		//get system config value of key, when value is null of key in map.
+		return String.valueOf(value);
+	}
 	
 	public static String getParameter(String key) {
 		//priority level:env->java command->configure
