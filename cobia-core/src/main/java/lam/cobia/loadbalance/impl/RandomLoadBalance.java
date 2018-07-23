@@ -1,34 +1,22 @@
-package lam.cobia.cluster;
+package lam.cobia.loadbalance.impl;
 
 import lam.cobia.core.util.ParamConstant;
+import lam.cobia.loadbalance.AbstractLoadBalance;
 import lam.cobia.rpc.Consumer;
 import lam.cobia.rpc.Invocation;
-import lam.cobia.rpc.Result;
 
 import java.util.List;
 import java.util.Random;
 
 /**
- * @description: RandomLoadBalanceCluster
+ * @description: RandomLoadBalance
  * @author: linanmiao
- * @date: 2018/7/22 0:30
+ * @date: 2018/7/23 23:46
  * @version: 1.0
  */
-public class RandomLoadBalanceCluster<T> extends AbstractCluster<T>{
-
-    public RandomLoadBalanceCluster(Class<T> interfaceClass, List<Consumer<T>> consumers) {
-        super(interfaceClass, consumers);
-    }
-
+public class RandomLoadBalance extends AbstractLoadBalance {
     @Override
-    public Result doInvoke(Invocation invocation) {
-        List<Consumer<T>> consumers = getConsumers();
-        Consumer<T> consumer = select(consumers);
-        Result result = consumer.invoke(invocation);
-        return result;
-    }
-
-    private Consumer<T> select(List<Consumer<T>> consumers) {
+    public <T> Consumer<T> doSelect(List<Consumer<T>> consumers, Invocation invocation) {
         int totalWeight = 0;
         for (Consumer<T> consumer : consumers) {
             totalWeight += consumer.getParamInt(ParamConstant.WEIGHT, ParamConstant.WEIGHT_DEFAULT) * 100;

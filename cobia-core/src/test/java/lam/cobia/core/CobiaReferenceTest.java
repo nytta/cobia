@@ -29,18 +29,22 @@ public class CobiaReferenceTest {
 		
 		IMyService myService = context.getBean("myService", IMyService.class);
 		System.out.println(System.identityHashCode(myService));
-		
-		String result = myService.doIt("lam");
-		System.out.println(result);
+		String result;
+		for (int i = 0; i < 5; i++) {
+			result = myService.doIt("lam");
+			System.out.println(result);
+		}
 		
 		IYourService yourService = context.getBean("yourService", IYourService.class);
 		/*int r = yourService.doYourself(2);
 		System.out.println(r);*/
 		/*result = yourService.gogo((byte)1);
 		System.out.println(result);*/
-		
-		result = yourService.doString("aa");
-		System.out.println(result);
+
+		for (int j = 0; j < 5; j++) {
+			result = yourService.doString("aa");
+			System.out.println(result);
+		}
 		
 		try {
 			Thread.sleep(5000L);

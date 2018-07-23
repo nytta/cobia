@@ -8,10 +8,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import lam.cobia.cluster.Cluster;
-import lam.cobia.cluster.RandomLoadBalanceCluster;
+import lam.cobia.cluster.FailoverCluster;
+import lam.cobia.cluster.FailoverCluster;
 import lam.cobia.core.constant.Constant;
 import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.util.ParameterUtil;
+import lam.cobia.loadbalance.LoadBalance;
 import lam.cobia.remoting.ChannelHandler;
 import lam.cobia.remoting.Client;
 import lam.cobia.remoting.DefaultChannelHanlder;
@@ -19,6 +21,7 @@ import lam.cobia.remoting.ExchangeServer;
 import lam.cobia.remoting.HeaderExchangeServer;
 import lam.cobia.remoting.transport.netty.NettyClient;
 import lam.cobia.remoting.transport.netty.NettyServer;
+import lam.cobia.spi.ServiceFactory;
 
 /**
 * <p>
@@ -76,7 +79,8 @@ public class DefaultProtocol implements Protocol{
 			consumerMap.put(consumer, sharedObject);
 			consumers.add(consumer);
 		}
-		Cluster<T> cluster = new RandomLoadBalanceCluster<T>(clazz, consumers);
+		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
+		Cluster<T> cluster = new FailoverCluster<T>(clazz, consumers, loadBalance);
 		return cluster;
 	}
 

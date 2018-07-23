@@ -1,5 +1,6 @@
 package lam.cobia.cluster;
 
+import lam.cobia.loadbalance.LoadBalance;
 import lam.cobia.rpc.Consumer;
 import lam.cobia.rpc.Invocation;
 import lam.cobia.rpc.Result;
@@ -18,13 +19,24 @@ public abstract class AbstractCluster<T> implements Cluster<T>{
 
     private List<Consumer<T>> consumers;
 
-    public AbstractCluster(Class<T> interfaceClass, List<Consumer<T>> consumers) {
+    private LoadBalance loadBalance;
+
+    public AbstractCluster(Class<T> interfaceClass, List<Consumer<T>> consumers, LoadBalance loadBalance) {
+        this.interfaceClass = interfaceClass;
+        if (consumers == null || consumers.isEmpty()) {
+            throw new IllegalStateException("List<Consumer<T> consumers is null or empty.");
+        }
+        this.consumers = consumers;
+        this.loadBalance = loadBalance;
+    }
+
+    /*public AbstractCluster(Class<T> interfaceClass, List<Consumer<T>> consumers) {
         if (consumers == null || consumers.isEmpty()) {
             throw new IllegalStateException("List<Consumer<T> consumers is null or empty.");
         }
         this.consumers = consumers;
         this.interfaceClass = interfaceClass;
-    }
+    }*/
 
     @Override
     public String getKey() {
@@ -53,6 +65,19 @@ public abstract class AbstractCluster<T> implements Cluster<T>{
     }
 
     public abstract Result doInvoke(Invocation invocation);
+
+    protected <T> Consumer<T> select(List<Consumer<T>> consumers, Consumer<T> selectedCosnumer, Invocation invocation) {
+        if (consumers == null || consumers.isEmpty()) {
+            return null;
+        }
+        Consumer<T> consumer = loadBalance.select(consumers, invocation);
+        if (selectedCosnumer != null && consumer.equals(selectedCosnumer)) {
+            consumers.remove(consumer);
+            return select(consumers, selectedCosnumer, invocation);
+        } else {
+            return consumer;
+        }
+    }
 
     private void invokeIllegal() {
         throw new IllegalStateException("This method can not be called.");
