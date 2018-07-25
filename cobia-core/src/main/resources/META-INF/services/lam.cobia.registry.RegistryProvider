@@ -1,0 +1,1 @@
+zookeeper=lam.cobia.registry.impl.ZookeeperRegistryProvider
