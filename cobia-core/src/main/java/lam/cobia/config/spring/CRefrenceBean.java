@@ -33,6 +33,8 @@ public class CRefrenceBean<T> extends AbstractConfig
 	private Class<?> interfaceClass;
 	
 	private volatile T ref;
+
+	private String registry = "zookeeper"; //default registry:zookeeper
 	
 	private final AtomicBoolean refInited = new AtomicBoolean(false);
 	
@@ -112,4 +114,11 @@ public class CRefrenceBean<T> extends AbstractConfig
 		return ref;
 	}
 
+	public String getRegistry() {
+		return registry;
+	}
+
+	public void setRegistry(String registry) {
+		this.registry = registry;
+	}
 }

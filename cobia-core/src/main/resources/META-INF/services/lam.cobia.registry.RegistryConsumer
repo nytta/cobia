@@ -1,1 +1,2 @@
 zookeeper=lam.cobia.registry.impl.ZookeeperRegistryConsumer
+direct=lam.cobia.registry.impl.DirectRegistryConsumer

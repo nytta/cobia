@@ -25,6 +25,11 @@
 							<xsd:documentation><![CDATA[ The service implementation instance bean id. ]]></xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
+					<xsd:attribute name="registry" type="xsd:string" use="optional">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[ registry type of service. ]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>
@@ -37,6 +42,11 @@
 					<!-- attribute id can be defined, which is defined by spring in default. -->
 					<!-- <xsd:attribute name="id" type="xsd:string" use="required"/> -->
 					<xsd:attribute name="interface" type="xsd:string" use="required"/>
+					<xsd:attribute name="registry" type="xsd:string" use="optional">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[ registry type of reference. ]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>

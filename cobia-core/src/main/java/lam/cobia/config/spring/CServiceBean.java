@@ -40,6 +40,8 @@ public class CServiceBean<T> extends AbstractConfig
 	private String beanName;
 	
 	private String id;
+
+	private String registry = "zookeeper"; //default registry:zookeeper
 	
 	//=============
 	
@@ -123,10 +125,24 @@ public class CServiceBean<T> extends AbstractConfig
 		return ref;
 	}
 
-	@Override
-	public String toString() {
-		return "CServiceBean [interfaceName=" + interfaceName + ", interfaceClass=" + interfaceClass + ", ref=" + ref
-				+ ", beanName=" + beanName + ", id=" + id + "]";
+	public String getRegistry() {
+		return registry;
 	}
 
+	public void setRegistry(String registry) {
+		this.registry = registry;
+	}
+
+	@Override
+	public String toString() {
+		return "CServiceBean{" +
+				"applicationContext=" + applicationContext +
+				", interfaceName='" + interfaceName + '\'' +
+				", interfaceClass=" + interfaceClass +
+				", ref=" + ref +
+				", beanName='" + beanName + '\'' +
+				", id='" + id + '\'' +
+				", registry='" + registry + '\'' +
+				'}';
+	}
 }
