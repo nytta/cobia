@@ -8,7 +8,6 @@ import lam.cobia.log.Console;
 import lam.cobia.rpc.DefaultInvocation;
 import lam.cobia.rpc.Exporter;
 import lam.cobia.rpc.Invocation;
-import lam.cobia.rpc.Invoker;
 import lam.cobia.rpc.Result;
 
 /**

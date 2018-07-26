@@ -1,5 +1,7 @@
 package lam.cobia.config.spring;
 
+import java.util.Map;
+
 import lam.cobia.spi.Spiable;
 
 /**
@@ -13,6 +15,6 @@ import lam.cobia.spi.Spiable;
 @Spiable("cobia")
 public interface Reference {
 	
-	public <T> T refer(Class<T> clazz);
+	public <T> T refer(Class<T> clazz, Map<String, Object> params);
 
 }

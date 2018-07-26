@@ -10,7 +10,7 @@ import java.io.Closeable;
 * @date 2018年7月6日
 * @versio 1.0
 */
-public interface Provider<T> /*extends Invoker*/ extends Closeable{
+public interface Provider<T> extends Closeable{
 	
 	public String getKey();
 	

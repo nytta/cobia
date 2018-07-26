@@ -41,6 +41,7 @@ public class CServiceBean<T> extends AbstractConfig
 	
 	private String id;
 
+	@ParamAnnotation
 	private String registry = "zookeeper"; //default registry:zookeeper
 	
 	//=============
@@ -50,6 +51,7 @@ public class CServiceBean<T> extends AbstractConfig
 	public void afterPropertiesSet() throws Exception {
 		//初始化完bean的属性值之后
 		Console.println(toString());
+		putParamIntoMap();
 	}
 	
 	//The method of implementing of interface org.springframework.beans.factory.DisposableBean

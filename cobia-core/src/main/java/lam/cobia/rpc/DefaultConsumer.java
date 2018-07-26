@@ -23,8 +23,8 @@ public class DefaultConsumer<T> extends AbstractConsumer<T>{
 	
 	private Client client;
 
-	public DefaultConsumer(Class<T> clazz, Client client) {
-		super(clazz);
+	public DefaultConsumer(Class<T> clazz, Map<String, Object> params, Client client) {
+		super(clazz, params);
 		this.client = client;
 	}
 

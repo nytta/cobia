@@ -20,10 +20,11 @@ public abstract class AbstractConsumer<T> implements Consumer<T>{
 
 	private Map<String, Object> params;
 	
-	public AbstractConsumer(Class<T> clazz) {
+	public AbstractConsumer(Class<T> clazz, Map<String, Object> params) {
 		Objects.requireNonNull(clazz, "Class<T> clazz is null");
+		Objects.requireNonNull(params, "Map<String, Object> params is null");
 		this.clazz = clazz;
-		this.params = new HashMap<String, Object>();
+		this.params = params;
 	}
 	
 	@Override

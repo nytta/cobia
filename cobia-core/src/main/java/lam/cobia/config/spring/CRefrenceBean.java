@@ -34,7 +34,11 @@ public class CRefrenceBean<T> extends AbstractConfig
 	
 	private volatile T ref;
 
+	@ParamAnnotation
 	private String registry = "zookeeper"; //default registry:zookeeper
+
+	@ParamAnnotation
+	private String serviceServer; //This field must be initialzed, when value of field `registry` is 'direct'.
 	
 	private final AtomicBoolean refInited = new AtomicBoolean(false);
 	
@@ -45,7 +49,7 @@ public class CRefrenceBean<T> extends AbstractConfig
 	//The method of implementing interface org.springframework.beans.factory.InitializingBean
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		
+		putParamIntoMap();
 	}
 	
 	//The method of implementing interface org.springframework.beans.factory.DisposableBean
@@ -109,7 +113,7 @@ public class CRefrenceBean<T> extends AbstractConfig
 		boolean oldValue = refInited.get();
 		if (!oldValue && refInited.compareAndSet(oldValue, true)) {
 			//@TODO init ref
-			ref = (T) ServiceFactory.takeDefaultInstance(Reference.class).refer(interfaceClass);//(T) CobiaReference.getInstance().refer(interfaceClass);
+			ref = (T) ServiceFactory.takeDefaultInstance(Reference.class).refer(interfaceClass, params);
 		}
 		return ref;
 	}
@@ -120,5 +124,13 @@ public class CRefrenceBean<T> extends AbstractConfig
 
 	public void setRegistry(String registry) {
 		this.registry = registry;
+	}
+
+	public String getServiceServer() {
+		return serviceServer;
+	}
+
+	public void setServiceServer(String serviceServer) {
+		this.serviceServer = serviceServer;
 	}
 }

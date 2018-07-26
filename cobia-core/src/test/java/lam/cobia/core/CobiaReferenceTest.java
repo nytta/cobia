@@ -2,12 +2,9 @@ package lam.cobia.core;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import lam.cobia.config.spring.CobiaReference;
 import lam.cobia.core.constant.Constant;
-import lam.cobia.core.exception.CobiaException;
 import lam.cobia.core.service.IMyService;
 import lam.cobia.core.service.IYourService;
-import lam.cobia.log.Console;
 
 /**
 * <p>

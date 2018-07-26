@@ -3,6 +3,7 @@ package lam.cobia.rpc;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -68,14 +69,14 @@ public class DefaultProtocol implements Protocol{
 	}
 
 	@Override
-	public <T> Consumer<T> refer(Class<T> clazz) {
+	public <T> Consumer<T> refer(Class<T> clazz, Map<String, Object> params) {
 		//create DefaultInvoker<T> object with tcp client[]
 
 		//Class<T> clazz ->  List<HostAndPort>
 		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
 		List<HostAndPort> list = getHostAndPorts(clazz);
 		for (HostAndPort hap : list) {
-			Consumer<T> consumer = new DefaultConsumer<T>(clazz, getClient(hap));
+			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(hap));
 			consumerMap.put(consumer, sharedObject);
 			consumers.add(consumer);
 		}
@@ -106,7 +107,7 @@ public class DefaultProtocol implements Protocol{
 	
 	private ExchangeServer createServer(Provider<?> provider) {		
 		int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
-		
+
 		NettyServer nettyServer = nettyMap.get(port); 
 		if (nettyServer == null) {
 			ChannelHandler channelHandler = new DefaultChannelHanlder(exporterMap);

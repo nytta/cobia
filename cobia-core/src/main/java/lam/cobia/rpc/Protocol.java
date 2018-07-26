@@ -1,6 +1,7 @@
 package lam.cobia.rpc;
 
 import java.io.Closeable;
+import java.util.Map;
 
 import lam.cobia.spi.Spiable;
 
@@ -17,7 +18,7 @@ public interface Protocol extends Closeable{
 	
 	public <T> Exporter<T> export(Provider<T> provider);
 	
-	public <T> Consumer<T> refer(Class<T> clazz);
+	public <T> Consumer<T> refer(Class<T> clazz, Map<String, Object> params);
 	
 	public void close();
 }
