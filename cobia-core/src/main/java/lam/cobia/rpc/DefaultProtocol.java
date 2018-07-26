@@ -1,5 +1,7 @@
 package lam.cobia.rpc;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +76,7 @@ public class DefaultProtocol implements Protocol{
 
 		//Class<T> clazz ->  List<HostAndPort>
 		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
-		List<HostAndPort> list = getHostAndPorts(clazz);
+		List<HostAndPort> list = getHostAndPorts(clazz, params);
 		for (HostAndPort hap : list) {
 			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(hap));
 			consumerMap.put(consumer, sharedObject);
@@ -85,12 +87,30 @@ public class DefaultProtocol implements Protocol{
 		return cluster;
 	}
 
-	private List<HostAndPort> getHostAndPorts(Class<?> clazz) {
+	private List<HostAndPort> getHostAndPorts(Class<?> clazz, Map<String, Object> params) {
 		//server host and port temporarily,
 		//It will registry by zookeeper in the future.
 		//@TODO
 		String serverHost = ParameterUtil.getParameter(Constant.KEY_SERVER_HOST, Constant.DEFAULT_SERVER_HOSTNAME);
 		int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
+
+		String registry = ParameterUtil.getConfigParameter("registry", params, "zookeeper");
+		if ("direct".equals(registry)) {
+			String serviceServer = ParameterUtil.getConfigParameter("serviceServer", params);
+			if (StringUtils.isBlank(serviceServer)) {
+				throw new IllegalArgumentException("attribute serviceServer cann't be null when attribute registry is direct.");
+			}
+			int index = serviceServer.indexOf(":");
+			if (index == -1) {
+				serverHost = serviceServer;
+				port = 80;
+			} else {
+				String[] strs = serviceServer.split(":");
+				serverHost = strs[0];
+				port = Integer.parseInt(strs[1]);
+			}
+		}
+
 		List<HostAndPort> list = new ArrayList<HostAndPort>();
 		HostAndPort hap = new HostAndPort()
 				.setHost(serverHost).setPort(port);

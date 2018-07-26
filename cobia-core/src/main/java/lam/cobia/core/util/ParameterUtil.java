@@ -12,6 +12,14 @@ import java.util.Map;
 */
 public class ParameterUtil {
 
+	public static String getConfigParameter(String key, Map<String, Object> map, String defaultValue) {
+		String value = getConfigParameter(key, map);
+		if (value == null) {
+			return defaultValue;
+		}
+		return value;
+	}
+
 	public static String getConfigParameter(String key, Map<String, Object> map) {
 		Object value = map.get(key);
 		if (value == null) {
