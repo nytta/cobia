@@ -1,0 +1,3 @@
+hessian2=lam.cobia.serialize.Hessian2Deserializer
+protobuf=lam.cobia.serialize.ProtobufDeserializer
+protostuff=lam.cobia.serialize.ProtostuffDeserializer

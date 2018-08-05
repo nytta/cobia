@@ -23,14 +23,6 @@ public class ProtobufDeserializer extends AbstractSerializer implements CobiaDes
 	public ProtobufDeserializer() {
 		super("protobuf");
 	}
-	
-	private static class InstanceHolder {
-		private static ProtobufDeserializer INSTANCE = new ProtobufDeserializer();
-	}
-	
-	public static ProtobufDeserializer getInstance() {
-		return InstanceHolder.INSTANCE;
-	}
 
 	@Override
 	public <T> T deserialize(byte[] bytes, Class<T> clazz) {

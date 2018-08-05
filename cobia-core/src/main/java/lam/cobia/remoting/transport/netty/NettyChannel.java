@@ -10,6 +10,7 @@ import lam.cobia.remoting.IBody;
 import lam.cobia.remoting.codec.CobiaPacket;
 import lam.cobia.serialize.ProtobufSerializer;
 import lam.cobia.serialize.support.CobiaSerializer;
+import lam.cobia.spi.ServiceFactory;
 
 /**
 * <p>
@@ -26,9 +27,7 @@ public class NettyChannel implements Channel{
 	private static ConcurrentMap<io.netty.channel.Channel, lam.cobia.remoting.Channel> channelMap = 
 			new ConcurrentHashMap<io.netty.channel.Channel, lam.cobia.remoting.Channel>();
 	
-	//public CobiaSerializer serializer = Hessian2Serializer.getInstance();
-	
-	public CobiaSerializer serializer = ProtobufSerializer.getInstance();
+	public CobiaSerializer serializer = ServiceFactory.takeDefaultInstance(CobiaSerializer.class);//ProtobufSerializer.getInstance();
 	
 	public NettyChannel(io.netty.channel.Channel channel) {
 		this.channel = channel;
@@ -67,38 +66,6 @@ public class NettyChannel implements Channel{
 		} else {
 			throw new CobiaException("not support class:" + clazz.getName());
 		}
-		
-		/* if (msg instanceof Request2) {
-			Request2 request2 = (Request2) msg;
-			Class<?> dataClass;
-			try {
-				//提供者方法的参数对象类型
-				dataClass = Class.forName(request2.getDataClassName());
-				//提供者方法的参数对象
-				byte[] dataBytes = serializer.serialize(request2.getData(), dataClass);
-				request2.setData(dataBytes);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				throw new CobiaException(e);
-			}
-		} else if (msg instanceof Response2){
-			Response2 response2 = (Response2) msg;
-			response2.getDataClassName();
-			Class<?> dataClass;
-			try {
-				//提供者方法的参数对象类型
-				dataClass = Class.forName(response2.getDataClassName());
-				//提供者方法的参数对象
-				byte[] dataBytes = serializer.serialize(response2.getData(), dataClass);
-				response2.setData(dataBytes);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				throw new CobiaException(e);
-			}
-		} else {
-
-			//do nothing.
-		} */
 
 	    byte[] data = serializer.serialize(msg, clazz);
 	    

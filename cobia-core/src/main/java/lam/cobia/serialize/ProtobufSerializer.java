@@ -23,14 +23,6 @@ public class ProtobufSerializer extends AbstractSerializer implements CobiaSeria
 	public ProtobufSerializer() {
 		super("protobuf");
 	}
-	
-	private static class InstanceHolder {
-		private static ProtobufSerializer INSTANCE = new ProtobufSerializer();
-	}
-	
-	public static ProtobufSerializer getInstance() {
-		return InstanceHolder.INSTANCE;
-	}
 
 	@Override
 	public byte[] serialize(Object resource, Class<?> clazz) {

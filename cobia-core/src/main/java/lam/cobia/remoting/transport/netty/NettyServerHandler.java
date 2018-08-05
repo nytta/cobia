@@ -16,6 +16,7 @@ import lam.cobia.remoting.Request2;
 import lam.cobia.remoting.codec.Packet;
 import lam.cobia.serialize.ProtobufDeserializer;
 import lam.cobia.serialize.support.CobiaDeserializer;
+import lam.cobia.spi.ServiceFactory;
 
 /**
 * <p>
@@ -31,7 +32,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 	
 	private ChannelHandler handler;
 	
-	public CobiaDeserializer deserializer = ProtobufDeserializer.getInstance();
+	public CobiaDeserializer deserializer = ServiceFactory.takeDefaultInstance(CobiaDeserializer.class);//ProtobufDeserializer.getInstance();
 	
 	public NettyServerHandler(ChannelHandler handler) {
 		this.handler = handler;

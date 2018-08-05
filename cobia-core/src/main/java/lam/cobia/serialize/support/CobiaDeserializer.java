@@ -1,4 +1,7 @@
 package lam.cobia.serialize.support;
+
+import lam.cobia.spi.Spiable;
+
 /**
 * <p>
 * desrialize Object
@@ -7,6 +10,7 @@ package lam.cobia.serialize.support;
 * @date 2018年4月29日
 * @versio 1.0
 */
+@Spiable("hessian2")
 public interface CobiaDeserializer {
 
 	public <T> T deserialize(byte[] bytes, Class<T> clazz);

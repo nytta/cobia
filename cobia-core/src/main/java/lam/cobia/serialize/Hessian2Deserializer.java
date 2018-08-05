@@ -22,14 +22,6 @@ public class Hessian2Deserializer extends AbstractSerializer implements CobiaDes
 		super("hessian2");
 	}
 	
-	private static class InstanceHolder {
-		private static Hessian2Deserializer INSTANCE = new Hessian2Deserializer();
-	}
-	
-	public static Hessian2Deserializer getInstance() {
-		return InstanceHolder.INSTANCE;
-	}
-	
 	@Override
 	public <T> T deserialize(byte[] bytes, Class<T> clazz) {
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);

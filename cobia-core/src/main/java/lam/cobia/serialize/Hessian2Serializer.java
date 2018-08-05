@@ -22,14 +22,6 @@ public class Hessian2Serializer extends AbstractSerializer implements CobiaSeria
 		super("hessian2");
 	}
 	
-	private static class InstanceHolder {
-		private static Hessian2Serializer INSTANCE = new Hessian2Serializer();
-	}
-	
-	public static Hessian2Serializer getInstance() {
-		return InstanceHolder.INSTANCE;
-	}
-	
 	@Override
 	public byte[] serialize(Object resource, Class<?> clazz) {
 		java.io.ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

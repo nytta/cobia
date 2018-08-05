@@ -11,6 +11,7 @@ import lam.cobia.remoting.Response2;
 import lam.cobia.remoting.codec.Packet;
 import lam.cobia.serialize.ProtobufDeserializer;
 import lam.cobia.serialize.support.CobiaDeserializer;
+import lam.cobia.spi.ServiceFactory;
 
 /**
 * <p>
@@ -22,7 +23,7 @@ import lam.cobia.serialize.support.CobiaDeserializer;
 */
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 	
-	public CobiaDeserializer deserializer = ProtobufDeserializer.getInstance();
+	public CobiaDeserializer deserializer = ServiceFactory.takeDefaultInstance(CobiaDeserializer.class);//ProtobufDeserializer.getInstance();
 	
 	@Override
 	public boolean isSharable() {
