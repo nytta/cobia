@@ -32,15 +32,12 @@ public class DefaultFuture implements ResponseFuture{
 	
 	private static final ConcurrentMap<Long, DefaultFuture> FUTURES = new ConcurrentHashMap<Long, DefaultFuture>();
 	
-	//private static final ConcurrentMap<Long, Channel> CHANNELS = new ConcurrentHashMap<Long, Channel>();
-	
 	public DefaultFuture(IRequest request, Channel channel) {
 		this.request = request;
 		this.channel = channel;
 		this.lock = new ReentrantLock();
 		this.requestDone = lock.newCondition();
 		FUTURES.put(request.getId(), this);
-		//this.CHANNELS.put(request.getId(), this.channel);
 	}
 	
 	Channel getChannel() {
@@ -94,7 +91,7 @@ public class DefaultFuture implements ResponseFuture{
 				lock.unlock();
 			}
 		}
-		return response.getData();
+		return response;
 	}
 
 }

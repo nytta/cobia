@@ -30,14 +30,6 @@ public abstract class AbstractCluster<T> implements Cluster<T>{
         this.loadBalance = loadBalance;
     }
 
-    /*public AbstractCluster(Class<T> interfaceClass, List<Consumer<T>> consumers) {
-        if (consumers == null || consumers.isEmpty()) {
-            throw new IllegalStateException("List<Consumer<T> consumers is null or empty.");
-        }
-        this.consumers = consumers;
-        this.interfaceClass = interfaceClass;
-    }*/
-
     @Override
     public String getKey() {
         return interfaceClass.getName();

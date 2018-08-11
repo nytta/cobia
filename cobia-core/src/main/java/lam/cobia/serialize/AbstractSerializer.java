@@ -1,4 +1,7 @@
 package lam.cobia.serialize;
+
+import lam.cobia.serialize.support.CobiaSerializer;
+
 /**
 * <p>
 * abstract serializer
@@ -7,7 +10,7 @@ package lam.cobia.serialize;
 * @date 2018年5月6日
 * @versio 1.0
 */
-public abstract class AbstractSerializer {
+public abstract class AbstractSerializer implements CobiaSerializer {
 	
 	protected final String name;
 

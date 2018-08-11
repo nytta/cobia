@@ -49,6 +49,7 @@ public class NettyChannel implements Channel{
 	@Override
 	public void send(Object msg) {
 		Class<?> clazz = msg.getClass();
+		/*
 		Console.println("class: " + clazz + ", msg:" + msg);
 		
 		if (msg instanceof IBody) {
@@ -65,7 +66,7 @@ public class NettyChannel implements Channel{
 			}
 		} else {
 			throw new CobiaException("not support class:" + clazz.getName());
-		}
+		}*/
 
 	    byte[] data = serializer.serialize(msg, clazz);
 	    

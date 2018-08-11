@@ -6,7 +6,6 @@ import java.io.IOException;
 import com.caucho.hessian.io.Hessian2Input;
 
 import lam.cobia.core.exception.CobiaException;
-import lam.cobia.serialize.support.CobiaDeserializer;
 
 /**
 * <p>
@@ -16,7 +15,7 @@ import lam.cobia.serialize.support.CobiaDeserializer;
 * @date 2018年1月3日
 * @version 1.0
 */
-public class Hessian2Deserializer extends AbstractSerializer implements CobiaDeserializer{
+public class Hessian2Deserializer extends AbstractDeserializer{
 	
 	public Hessian2Deserializer() {
 		super("hessian2");

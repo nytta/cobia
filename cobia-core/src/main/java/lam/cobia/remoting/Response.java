@@ -49,9 +49,4 @@ public class Response implements IResponse, Serializable{
 		return data;
 	}
 
-	@Override
-	public String toString() {
-		return "Response [id=" + id + ", dataClassName=" + dataClassName + ", data=" + data + "]";
-	}
-
 }

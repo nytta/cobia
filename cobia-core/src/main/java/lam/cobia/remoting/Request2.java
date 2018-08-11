@@ -22,18 +22,29 @@ public class Request2 implements IRequest, Serializable{
 	private String interfaceName;
 	
 	public String method;
-	
-	//暂不支持方法重载
-	//public Class<?>[] getParameterTypes();
-	
-	//public Object[] getArguments();
-	
-	//对应参数的类名
-	private String dataClassName;
 
-	//对应参数的对象
-	private Object data;
+	private Class<?>[] parameterTypes;
+
+	private Object[] arguments;
 	
+	public Class<?>[] getParameterTypes() {
+		return this.parameterTypes;
+	}
+	
+	public Object[] getArguments() {
+		return this.arguments;
+	}
+
+	public Request2 setParameterTypes(Class<?>[] parameterTypes) {
+		this.parameterTypes = parameterTypes;
+		return this;
+	}
+
+	public Request2 setArguments(Object[] arguments) {
+		this.arguments = arguments;
+		return this;
+	}
+
 	private static final AtomicLong INVOKER_ID = new AtomicLong();
 	
 	public Request2() {
@@ -62,23 +73,7 @@ public class Request2 implements IRequest, Serializable{
 		return this;
 	}
 
-	public String getDataClassName() {
-		return dataClassName;
-	}
 
-	public Request2 setDataClassName(String dataClassName) {
-		this.dataClassName = dataClassName;
-		return this;
-	}
-
-	public Object getData() {
-		return data;
-	}
-
-	public Request2 setData(Object data) {
-		this.data = data;
-		return this;
-	}
 	public long getId() {
 		return id;
 	}
@@ -93,12 +88,6 @@ public class Request2 implements IRequest, Serializable{
 	
 	private static long newId() {
 		return INVOKER_ID.incrementAndGet();
-	}
-
-	@Override
-	public String toString() {
-		return "Request2 [id=" + id + ", interfaceName=" + interfaceName + ", method=" + method + ", dataClassName="
-				+ dataClassName + ", data=" + data + "]";
 	}
 	
 }

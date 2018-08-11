@@ -2,13 +2,9 @@ package lam.cobia.rpc;
 
 import lam.cobia.core.exception.CobiaException;
 import lam.cobia.core.util.NetUtil;
-import lam.cobia.remoting.Channel;
-import lam.cobia.remoting.Client;
-import lam.cobia.remoting.DefaultFuture;
-import lam.cobia.remoting.Request2;
-import lam.cobia.remoting.Response;
+import lam.cobia.remoting.*;
+import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,36 +26,38 @@ public class DefaultConsumer<T> extends AbstractConsumer<T>{
 
 	@Override
 	protected Result doInvoke(Invocation invocation) {
-		//select one of clients to invoke the invocation
-		//Client client = client;
 		if (client.isClose()) {
 			throw new CobiaException("client(to server " + NetUtil.parseToString(client.getServerAddress()) + ") has been closed.");
 		}
 		Channel channel = client.getChannel();
 
-		Request2 request = Request2.newRequest2()
+		Request request = Request.newRequest()
 		.setInterfaceName(super.getInterface().getName())
 		.setMethod(invocation.getMethod());
-		if (invocation.getParameterTypes() == null || invocation.getParameterTypes().length == 0) {
-			
+		if (invocation.getParameterTypes() == null) {
+			request.setParameterTypes(new Class<?>[]{});
 		} else {
-			request
-			.setDataClassName(invocation.getParameterTypes()[0].getName())
-			.setData(invocation.getArguments()[0]);
+			request.setParameterTypes(invocation.getParameterTypes());
+		}
+		if (invocation.getArguments() == null) {
+			request.setArguments(new Object[]{});
+		} else {
+			request.setArguments(invocation.getArguments());
 		}
 		DefaultFuture future = new DefaultFuture(request, channel);
+
 		channel.send(request);
-		Object obj = future.get();
-		if (obj == null) {
-			throw new CobiaException("result is null");
+
+		Object response = future.get();
+		if (response == null) {
+			throw new CobiaException("response is null");
+		}
+		if (!(response instanceof Response)) {
+			throw new CobiaException("should be type:" + Response.class.getName() + ", but get type:" + response.getClass().getName());
 		}
 		DefaultResult result = new DefaultResult();
-		if (obj instanceof Response) {
-			Response response = (Response) obj;
-			return result.setValue(response.getData());
-		} else {
-			return result.setValue(obj);
-		}
+		result.setValue(((Response) response).getData());
+		return result;
 	}
 	
 	@Override

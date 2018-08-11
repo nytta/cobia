@@ -7,7 +7,6 @@ import io.protostuff.runtime.RuntimeSchema;
 import lam.cobia.core.exception.CobiaException;
 import lam.cobia.remoting.Request2;
 import lam.cobia.remoting.Response2;
-import lam.cobia.serialize.support.CobiaSerializer;
 
 /**
 * <p>
@@ -17,7 +16,7 @@ import lam.cobia.serialize.support.CobiaSerializer;
 * @date 2018年5月6日
 * @versio 1.0
 */
-public class ProtostuffSerializer extends AbstractSerializer implements CobiaSerializer{
+public class ProtostuffSerializer extends AbstractSerializer{
 	
 	private int bufferSize = LinkedBuffer.DEFAULT_BUFFER_SIZE;
 	

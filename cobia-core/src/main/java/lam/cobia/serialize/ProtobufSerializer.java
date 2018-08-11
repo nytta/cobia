@@ -8,7 +8,6 @@ import lam.cobia.remoting.Request2;
 import lam.cobia.remoting.Request2Proto;
 import lam.cobia.remoting.Response2;
 import lam.cobia.remoting.Response2Proto;
-import lam.cobia.serialize.support.CobiaSerializer;
 
 /**
 * <p>
@@ -18,7 +17,7 @@ import lam.cobia.serialize.support.CobiaSerializer;
 * @date 2018年4月30日
 * @versio 1.0
 */
-public class ProtobufSerializer extends AbstractSerializer implements CobiaSerializer{
+public class ProtobufSerializer extends AbstractSerializer{
 	
 	public ProtobufSerializer() {
 		super("protobuf");
@@ -48,12 +47,17 @@ public class ProtobufSerializer extends AbstractSerializer implements CobiaSeria
 	}
 	
 	private Request2Proto.Request2 transferRequest2(Request2 request2) {
-		ByteString bytes = ByteString.copyFrom((byte[]) request2.getData());
+		Byte[] byteObjs = (Byte[]) request2.getArguments();
+		byte[] bytesCopy = new byte[byteObjs.length];
+		for (int i = 0; i < byteObjs.length; i++) {
+			bytesCopy[i] = byteObjs[i].byteValue();
+		}
+		ByteString bytes = ByteString.copyFrom(bytesCopy);
 		Request2Proto.Request2.Builder builder = Request2Proto.Request2.newBuilder();
 		builder.setId(request2.getId())
 		.setInterfaceName(request2.getInterfaceName())
 		.setMethod(request2.getMethod())
-		.setDataClassName(request2.getDataClassName())
+		.setDataClassName(request2.getArguments()[0].getClass().getName())
 		.setData(bytes);
 		return builder.build();
 	}

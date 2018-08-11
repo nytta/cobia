@@ -18,65 +18,72 @@ public class Request implements IRequest, Serializable{
 	private static final long serialVersionUID = 7473629229906171995L;
 
 	private final long id;
-	
-	private String dataClassName;
 
-	private Object data;
+	private String interfaceName;
+
+	private String method;
+
+	private Class<?>[] parameterTypes;
+
+	private Object[] arguments;
 	
 	private static final AtomicLong INVOKER_ID = new AtomicLong();
 	
 	public Request() {
 		this.id = newId();
 	}
-	
-	public IBody setDataClassName(String dataClassName) {
-		this.dataClassName = dataClassName;
-		return this;
-	}
-	
-	public IBody setData(Object data) {
-		this.data = data;
-		return this;
-	}
-	
+
 	@Override
 	public long getId() {
 		return id;
 	}
-	
+
+	@Override
+	public Class<?>[] getParameterTypes() {
+		return this.parameterTypes;
+	}
+
+	@Override
+	public Object[] getArguments() {
+		return this.arguments;
+	}
+
 	@Override
 	public String getInterfaceName() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.interfaceName;
 	}
 	
 	@Override
 	public String getMethod() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.method;
 	}
-	
-	@Override
-	public String getDataClassName() {
-		return dataClassName;
+
+	public Request setInterfaceName(String interfaceName) {
+		this.interfaceName = interfaceName;
+		return this;
 	}
-	
-	@Override
-	public Object getData() {
-		return data;
+
+	public Request setMethod(String method) {
+		this.method = method;
+		return this;
 	}
-	
+
+	public Request setParameterTypes(Class<?>[] parameterTypes) {
+		this.parameterTypes = parameterTypes;
+		return this;
+	}
+
+	public Request setArguments(Object[] arguments) {
+		this.arguments = arguments;
+		return this;
+	}
+
 	public static Request newRequest() {
 		return new Request();
 	}
 	
 	private static long newId() {
 		return INVOKER_ID.incrementAndGet();
-	}
-
-	@Override
-	public String toString() {
-		return "Request [id=" + id + ", dataClassName=" + dataClassName + ", data=" + data + "]";
 	}
 
 }

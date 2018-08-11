@@ -6,7 +6,6 @@ import io.protostuff.runtime.RuntimeSchema;
 import lam.cobia.core.exception.CobiaException;
 import lam.cobia.remoting.Request2;
 import lam.cobia.remoting.Response2;
-import lam.cobia.serialize.support.CobiaDeserializer;
 
 /**
 * <p>
@@ -16,7 +15,7 @@ import lam.cobia.serialize.support.CobiaDeserializer;
 * @date 2018年5月6日
 * @versio 1.0
 */
-public class ProtostuffDeserializer extends AbstractSerializer implements CobiaDeserializer{
+public class ProtostuffDeserializer extends AbstractDeserializer{
 	
 	public ProtostuffDeserializer() {
 		super("protostuff");

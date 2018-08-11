@@ -8,7 +8,6 @@ import lam.cobia.remoting.Request2;
 import lam.cobia.remoting.Request2Proto;
 import lam.cobia.remoting.Response2;
 import lam.cobia.remoting.Response2Proto;
-import lam.cobia.serialize.support.CobiaDeserializer;
 
 /**
 * <p>
@@ -18,7 +17,7 @@ import lam.cobia.serialize.support.CobiaDeserializer;
 * @date 2018年4月30日
 * @versio 1.0
 */
-public class ProtobufDeserializer extends AbstractSerializer implements CobiaDeserializer{
+public class ProtobufDeserializer extends AbstractDeserializer{
 	
 	public ProtobufDeserializer() {
 		super("protobuf");
@@ -38,9 +37,8 @@ public class ProtobufDeserializer extends AbstractSerializer implements CobiaDes
 				Request2 request2 = new Request2(r2.getId())
 						.setInterfaceName(r2.getInterfaceName())
 						.setMethod(r2.getMethod())
-						.setDataClassName(r2.getDataClassName())
-						.setData(data);
-				return (T)request2;
+						.setParameterTypes(new Class[]{ Class.forName(r2.getDataClassName()) })
+						.setArguments(new Object[] { r2.getData() });
 			} catch (InvalidProtocolBufferException e) {
 				e.printStackTrace();
 				throw new CobiaException(e);

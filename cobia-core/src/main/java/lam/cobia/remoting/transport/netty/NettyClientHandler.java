@@ -7,6 +7,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import lam.cobia.log.Console;
 import lam.cobia.remoting.DefaultFuture;
+import lam.cobia.remoting.Response;
 import lam.cobia.remoting.Response2;
 import lam.cobia.remoting.codec.Packet;
 import lam.cobia.serialize.ProtobufDeserializer;
@@ -89,11 +90,12 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     	
 		Packet packet = (Packet) msg;
 		if (packet.getLength() > 0) {
-			//Response response = deserializer.deserialize(packet.getData(), Response.class);
-			Response2 response2 = deserializer.deserialize(packet.getData(), Response2.class);
+			Response response = deserializer.deserialize(packet.getData(), Response.class);
 			
-			DefaultFuture.received(channel, response2);
-		}
+			DefaultFuture.received(channel, response);
+		} else {
+		    throw new IllegalStateException("Client read response, but length of " + Packet.class.getName() + " is zero.");
+        }
     }
 
     /**

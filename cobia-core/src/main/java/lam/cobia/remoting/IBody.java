@@ -1,7 +1,11 @@
 package lam.cobia.remoting;
 /**
 * <p>
-* interface body
+* interface body:{ <br/>
+ * id: long, <br/>
+ * dataClassName: string, <br/>
+ * data: object <br/>
+ * } <br/>
 * </p>
 * @author linanmiao
 * @date 2018年5月5日
@@ -10,12 +14,16 @@ package lam.cobia.remoting;
 public interface IBody {
 	
 	public long getId();
+
+	public Class<?>[] getParameterTypes();
+
+	public Object[] getArguments();
 	
-	public String getDataClassName();
+	/*public String getDataClassName();
 	
 	public IBody setDataClassName(String dataClassName);
 	
 	public Object getData();
 
-	public IBody setData(Object data);
+	public IBody setData(Object data);*/
 }

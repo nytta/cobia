@@ -12,6 +12,7 @@ import io.netty.channel.ChannelPipeline;
 import lam.cobia.core.util.NetUtil;
 import lam.cobia.log.Console;
 import lam.cobia.remoting.ChannelHandler;
+import lam.cobia.remoting.Request;
 import lam.cobia.remoting.Request2;
 import lam.cobia.remoting.codec.Packet;
 import lam.cobia.serialize.ProtobufDeserializer;
@@ -117,10 +118,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     	
     	Packet packet = (Packet) msg;
     	if (packet.getLength() > 0) {
-	    	//Request request = deserializer.deserialize(packet.getData(), Request.class);
-    		Request2 request2 = deserializer.deserialize(packet.getData(), Request2.class);
-	    	handler.received(ch, request2);
-    	}
+	    	Request request = deserializer.deserialize(packet.getData(), Request.class);
+	    	handler.received(ch, request);
+    	} else {
+    	    throw new IllegalStateException("lenght of " + Packet.class.getName() + " packet is 0");
+        }
     }
 
     /**

@@ -1,7 +1,11 @@
 package lam.cobia.remoting;
 /**
 * <p>
-* entity for request(client) send to server.
+* entity for request(client) send to server. <br/>
+ * IRequest: { <br/>
+ * interfaceName: string, <br/>
+ * method: string <br/>
+ * } <br/>
 * </p>
 * @author linanmiao
 * @date 2018年5月1日
@@ -9,14 +13,8 @@ package lam.cobia.remoting;
 */
 public interface IRequest extends IBody{
 	
-	//public long getId();
-	
 	public String getInterfaceName();
 	
 	public String getMethod();
-	
-	//public String getDataClassName();
-
-	//public Object getData();
 
 }
