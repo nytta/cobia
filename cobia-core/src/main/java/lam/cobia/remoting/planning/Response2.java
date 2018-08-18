@@ -1,4 +1,6 @@
-package lam.cobia.remoting;
+package lam.cobia.remoting.planning;
+
+import lam.cobia.remoting.IResponse;
 
 import java.io.Serializable;
 

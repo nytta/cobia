@@ -5,8 +5,8 @@ import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.runtime.RuntimeSchema;
 import lam.cobia.core.exception.CobiaException;
-import lam.cobia.remoting.Request2;
-import lam.cobia.remoting.Response2;
+import lam.cobia.remoting.planning.Request2;
+import lam.cobia.remoting.planning.Response2;
 
 /**
 * <p>

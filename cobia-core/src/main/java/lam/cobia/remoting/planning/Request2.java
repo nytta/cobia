@@ -1,9 +1,9 @@
-package lam.cobia.remoting;
+package lam.cobia.remoting.planning;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
-import lam.cobia.core.util.GsonUtil;
+import lam.cobia.remoting.IRequest;
 
 /**
 * <p>

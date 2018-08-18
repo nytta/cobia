@@ -32,7 +32,7 @@ public class DefaultConsumer<T> extends AbstractConsumer<T>{
 		Channel channel = client.getChannel();
 
 		Request request = Request.newRequest()
-		.setInterfaceName(super.getInterface().getName())
+		.setInterfaceName(invocation.getInterface())
 		.setMethod(invocation.getMethod());
 		if (invocation.getParameterTypes() == null) {
 			request.setParameterTypes(new Class<?>[]{});

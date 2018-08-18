@@ -4,10 +4,10 @@ import com.google.protobuf.ByteString;
 
 import lam.cobia.core.exception.CobiaException;
 import lam.cobia.log.Console;
-import lam.cobia.remoting.Request2;
-import lam.cobia.remoting.Request2Proto;
-import lam.cobia.remoting.Response2;
-import lam.cobia.remoting.Response2Proto;
+import lam.cobia.remoting.planning.Request2;
+import lam.cobia.remoting.planning.Request2Proto;
+import lam.cobia.remoting.planning.Response2;
+import lam.cobia.remoting.planning.Response2Proto;
 
 /**
 * <p>

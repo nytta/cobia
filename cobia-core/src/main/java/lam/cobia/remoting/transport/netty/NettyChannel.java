@@ -3,12 +3,8 @@ package lam.cobia.remoting.transport.netty;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import lam.cobia.core.exception.CobiaException;
-import lam.cobia.log.Console;
 import lam.cobia.remoting.Channel;
-import lam.cobia.remoting.IBody;
 import lam.cobia.remoting.codec.CobiaPacket;
-import lam.cobia.serialize.ProtobufSerializer;
 import lam.cobia.serialize.support.CobiaSerializer;
 import lam.cobia.spi.ServiceFactory;
 
@@ -49,24 +45,6 @@ public class NettyChannel implements Channel{
 	@Override
 	public void send(Object msg) {
 		Class<?> clazz = msg.getClass();
-		/*
-		Console.println("class: " + clazz + ", msg:" + msg);
-		
-		if (msg instanceof IBody) {
-			IBody body = (IBody) msg;
-			try {
-				//参数对象类型
-				Class<?> dataClass = Class.forName(body.getDataClassName());
-				//参数对象
-				byte[] dataBytes = serializer.serialize(body.getData(), dataClass);
-				body.setData(dataBytes);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				throw new CobiaException(e);
-			}
-		} else {
-			throw new CobiaException("not support class:" + clazz.getName());
-		}*/
 
 	    byte[] data = serializer.serialize(msg, clazz);
 	    
