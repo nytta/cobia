@@ -112,7 +112,6 @@ public class CRefrenceBean<T> extends AbstractConfig
 		Objects.requireNonNull(interfaceClass, "interfaceClass is null");
 		boolean oldValue = refInited.get();
 		if (!oldValue && refInited.compareAndSet(oldValue, true)) {
-			//@TODO init ref
 			ref = (T) ServiceFactory.takeDefaultInstance(Reference.class).refer(interfaceClass, params);
 		}
 		return ref;

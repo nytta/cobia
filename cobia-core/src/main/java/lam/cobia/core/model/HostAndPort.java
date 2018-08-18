@@ -1,5 +1,7 @@
 package lam.cobia.core.model;
 
+import lam.cobia.core.util.GsonUtil;
+
 import java.util.Objects;
 
 /**
@@ -45,5 +47,10 @@ public class HostAndPort {
     public int hashCode() {
 
         return Objects.hash(host, port);
+    }
+
+    @Override
+    public String toString() {
+        return GsonUtil.toJson(this);
     }
 }

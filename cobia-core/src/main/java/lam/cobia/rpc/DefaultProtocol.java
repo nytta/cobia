@@ -1,5 +1,8 @@
 package lam.cobia.rpc;
 
+import lam.cobia.core.util.NetUtil;
+import lam.cobia.registry.RegistryConsumer;
+import lam.cobia.registry.RegistryProvider;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetSocketAddress;
@@ -25,6 +28,8 @@ import lam.cobia.remoting.HeaderExchangeServer;
 import lam.cobia.remoting.transport.netty.NettyClient;
 import lam.cobia.remoting.transport.netty.NettyServer;
 import lam.cobia.spi.ServiceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 * <p>
@@ -66,6 +71,12 @@ public class DefaultProtocol implements Protocol{
 	    exporterMap.put(provider.getKey(), exporter);
 	    
 	    openServer(provider);
+
+		String host = NetUtil.getLocalHost();
+		int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
+		HostAndPort hap = new HostAndPort().setHost(host).setPort(port);
+	    //do work: registry provider
+		ServiceFactory.takeDefaultInstance(RegistryProvider.class).registry(provider, hap);
 	    
 		return exporter;
 	}
@@ -74,9 +85,10 @@ public class DefaultProtocol implements Protocol{
 	public <T> Consumer<T> refer(Class<T> clazz, Map<String, Object> params) {
 		//create DefaultInvoker<T> object with tcp client[]
 
-		//Class<T> clazz ->  List<HostAndPort>
+		//get provider list of interface:clazz
+		List<HostAndPort> list = ServiceFactory.takeDefaultInstance(RegistryConsumer.class).getProviders(clazz);
+
 		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
-		List<HostAndPort> list = getHostAndPorts(clazz, params);
 		for (HostAndPort hap : list) {
 			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(hap));
 			consumerMap.put(consumer, sharedObject);
@@ -85,37 +97,6 @@ public class DefaultProtocol implements Protocol{
 		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
 		Cluster<T> cluster = new FailoverCluster<T>(clazz, consumers, loadBalance);
 		return cluster;
-	}
-
-	private List<HostAndPort> getHostAndPorts(Class<?> clazz, Map<String, Object> params) {
-		//server host and port temporarily,
-		//It will registry by zookeeper in the future.
-		//@TODO
-		String serverHost = ParameterUtil.getParameter(Constant.KEY_SERVER_HOST, Constant.DEFAULT_SERVER_HOSTNAME);
-		int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
-
-		String registry = ParameterUtil.getConfigParameter("registry", params, "zookeeper");
-		if ("direct".equals(registry)) {
-			String serviceServer = ParameterUtil.getConfigParameter("serviceServer", params);
-			if (StringUtils.isBlank(serviceServer)) {
-				throw new IllegalArgumentException("attribute serviceServer cann't be null when attribute registry is direct.");
-			}
-			int index = serviceServer.indexOf(":");
-			if (index == -1) {
-				serverHost = serviceServer;
-				port = 80;
-			} else {
-				String[] strs = serviceServer.split(":");
-				serverHost = strs[0];
-				port = Integer.parseInt(strs[1]);
-			}
-		}
-
-		List<HostAndPort> list = new ArrayList<HostAndPort>();
-		HostAndPort hap = new HostAndPort()
-				.setHost(serverHost).setPort(port);
-		list.add(hap);
-		return list;
 	}
 	
 	private void openServer(Provider<?> provider) {

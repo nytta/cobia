@@ -10,7 +10,7 @@ import lam.cobia.spi.Spiable;
  * @date: 2018/7/24 23:37
  * @version: 1.0
  */
-@Spiable("zookeeper")
+@Spiable("direct")
 public interface RegistryProvider {
 
     public <T> boolean registry(Provider<T> provider, HostAndPort hap);

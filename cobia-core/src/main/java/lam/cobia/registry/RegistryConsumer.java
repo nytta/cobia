@@ -12,7 +12,7 @@ import java.util.List;
  * @date: 2018/7/24 23:37
  * @version: 1.0
  */
-@Spiable("zookeeper")
+@Spiable("direct")
 public interface RegistryConsumer {
 
     public <T> List<HostAndPort> getProviders(Class<T> interfaceClass);

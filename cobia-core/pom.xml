@@ -5,16 +5,11 @@
     <parent>
         <artifactId>lam-cobia</artifactId>
         <groupId>lam</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cobia</groupId>
     <artifactId>cobia-core</artifactId>
-
-    <name>cobia-core</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

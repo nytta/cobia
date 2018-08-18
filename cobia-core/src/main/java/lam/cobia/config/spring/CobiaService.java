@@ -20,8 +20,6 @@ import lam.cobia.spi.ServiceFactory;
 public class CobiaService implements Service{
 	
 	private Protocol protocol = ServiceFactory.takeDefaultInstance(Protocol.class);
-	
-	//private ProxyFactory proxyFactory = ServiceFactory.takeDefaultInstance(ProxyFactory.class);
 
 	private ProviderProxyFactory providerProxyFactory = ServiceFactory.takeDefaultInstance(ProviderProxyFactory.class);
 	
@@ -29,7 +27,6 @@ public class CobiaService implements Service{
 	
 	@Override
 	public <T> void export(T ref, Class<T> clazz) {
-		//Provider<T> provider = proxyFactory.getProvider(ref, clazz);
 		Provider<T> provider = providerProxyFactory.getProvider(ref, clazz);
 		Exporter<T> exporter = protocol.export(provider);
 		exporters.add(exporter);

@@ -17,6 +17,7 @@ import lam.cobia.core.service.IYourService;
 public class CobiaReferenceTest {
 
 	public static void main(String[] args) {
+		System.setProperty("serviceServer", "192.168.20.100:4325");
 		System.setProperty(Constant.KEY_SERVER_HOST, "127.0.0.1");
 		System.setProperty(Constant.KEY_PORT, "4325");
 		System.setProperty(Constant.KEY_CLIENT_IS_SHARE, Boolean.TRUE.toString());
