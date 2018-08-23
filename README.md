@@ -21,5 +21,5 @@
 |id|required|string|id of this reference|
 |interface|required|string|Interface of reference|
 |registry|optional|string|registry method:direct, zookeeper|
-|serviceServer|optional|string|`serviceServer` value is provider address when `registry` is direct|
+|serviceServer|optional|string|`serviceServer` value is provider address(host:port) when `registry` is direct|
 
