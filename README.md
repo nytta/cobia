@@ -1,7 +1,5 @@
 cobia
 
-@todo
+#TODO
+- develop <cobia:registry /> tab
 
-ProxyFactory divide into:
-ConsumerProxyFactory
-PrivoderProxyFactory 
