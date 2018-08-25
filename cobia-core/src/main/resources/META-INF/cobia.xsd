@@ -57,4 +57,23 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="registry">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:attribute name="type" type="xsd:string" use="required">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[ value of type: direct, zookeeper ]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="address" type="xsd:string" use="optional">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[ address of type ]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
 </xsd:schema>

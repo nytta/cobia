@@ -16,6 +16,7 @@ public class CobiaNamespaceHandler extends NamespaceHandlerSupport{
 	public void init() {
 		registerBeanDefinitionParser(ServiceBeanDefinitionParser.XML_NAME, new ServiceBeanDefinitionParser(true));
 		registerBeanDefinitionParser(ReferenceBeanDefinitionParser.XML_NAME, new ReferenceBeanDefinitionParser(true));
+		registerBeanDefinitionParser(RegistryBeanDefinitionParser.XML_NAME, new RegistryBeanDefinitionParser(true));
 	}
 
 }

@@ -1,6 +1,7 @@
 package lam.cobia.registry;
 
 import lam.cobia.core.model.HostAndPort;
+import lam.cobia.core.util.ParameterMap;
 import lam.cobia.rpc.Provider;
 import lam.cobia.spi.Spiable;
 
@@ -11,7 +12,7 @@ import lam.cobia.spi.Spiable;
  * @version: 1.0
  */
 @Spiable("direct")
-public interface RegistryProvider {
+public interface RegistryProvider extends ParameterMap {
 
     public <T> boolean registry(Provider<T> provider, HostAndPort hap);
 
