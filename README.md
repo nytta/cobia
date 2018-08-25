@@ -2,7 +2,7 @@
 
 ## TODO
 
-- develop <cobia:registry /> tab
+- develop registry type:Zookeeper Registry in tag <cobia:registry />
 
 ## cobia tag
 
@@ -22,4 +22,11 @@
 |interface|required|string|Interface of reference|
 |registry|optional|string|registry method:direct, zookeeper|
 |serviceServer|optional|string|`serviceServer` value is provider address(host:port) when `registry` is direct|
+
+### <cobia:registry />
+
+| name |optional | type | description|
+| --- | ----- | ----- | --- |
+|type|required|string| value(direct, zookeeper) of registry type |
+|address|optional|string|address of registry|
 

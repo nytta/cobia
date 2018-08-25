@@ -1,5 +1,6 @@
 package lam.cobia.rpc;
 
+import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.util.NetUtil;
 import lam.cobia.registry.RegistryConsumer;
 import lam.cobia.registry.RegistryProvider;
@@ -76,7 +77,7 @@ public class DefaultProtocol implements Protocol{
 		int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
 		HostAndPort hap = new HostAndPort().setHost(host).setPort(port);
 	    //do work: registry provider
-		ServiceFactory.takeDefaultInstance(RegistryProvider.class).registry(provider, hap);
+		CRegistryBean.getRegistryProvider().registry(provider, hap);
 	    
 		return exporter;
 	}
@@ -86,7 +87,7 @@ public class DefaultProtocol implements Protocol{
 		//create DefaultInvoker<T> object with tcp client[]
 
 		//get provider list of interface:clazz
-		List<HostAndPort> list = ServiceFactory.takeDefaultInstance(RegistryConsumer.class).getProviders(clazz);
+		List<HostAndPort> list = CRegistryBean.getRegistryConsumer().getProviders(clazz);
 
 		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
 		for (HostAndPort hap : list) {

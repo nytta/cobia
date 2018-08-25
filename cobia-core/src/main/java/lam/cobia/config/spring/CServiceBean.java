@@ -2,7 +2,10 @@ package lam.cobia.config.spring;
 
 import java.util.Objects;
 
+import lam.cobia.core.util.GsonUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
@@ -13,7 +16,6 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import lam.cobia.log.Console;
 import lam.cobia.spi.ServiceFactory;
 
 /**
@@ -28,17 +30,24 @@ public class CServiceBean<T> extends AbstractConfig
 		implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ApplicationEvent>, BeanNameAware{
 
 	private static final long serialVersionUID = 4263813570880386858L;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CServiceBean.class);
 	
 	public ApplicationContext applicationContext;
-	
+
+	@ParamAnnotation
 	private String interfaceName;
-	
+
+	@ParamAnnotation
 	private Class<?> interfaceClass;
-	
+
+	@ParamAnnotation
 	private T ref;
-	
+
+	@ParamAnnotation
 	private String beanName;
-	
+
+	@ParamAnnotation
 	private String id;
 
 	@ParamAnnotation
@@ -50,15 +59,16 @@ public class CServiceBean<T> extends AbstractConfig
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		//初始化完bean的属性值之后
-		Console.println(toString());
 		putParamIntoMap();
+		LOGGER.info("[afterPropertiesSet] " + this.getClass().getSimpleName() + ", put param int map:" + super.getParams());
 	}
 	
 	//The method of implementing of interface org.springframework.beans.factory.DisposableBean
 	@Override
 	public void destroy() throws Exception {
 		//销毁bean之前
-		
+		super.clearParams();
+		LOGGER.info("[destroy] " + this.getClass().getSimpleName() + ", clear param map");
 	}
 	
 	//The method of implementing of interface org.springframework.context.ApplicationContextAware
@@ -73,7 +83,7 @@ public class CServiceBean<T> extends AbstractConfig
 		//1.org.springframework.context.event.ContextRefreshedEvent ->
 		//2.org.springframework.context.event.ContextStartedEvent ->
 		//3.org.springframework.context.event.ContextClosedEvent
-		Console.println(event.getClass().getName());
+		LOGGER.info(event.getClass().getName());
 		if (ContextRefreshedEvent.class.getName().equals(event.getClass().getName())) {
 			//do export bean
 			ServiceFactory.takeDefaultInstance(Service.class).export(getRef(), (Class<T>) interfaceClass);

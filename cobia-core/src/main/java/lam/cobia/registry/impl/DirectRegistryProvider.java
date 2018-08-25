@@ -1,8 +1,11 @@
 package lam.cobia.registry.impl;
 
+import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.model.HostAndPort;
+import lam.cobia.registry.AbstractRegistryProvider;
 import lam.cobia.registry.RegistryProvider;
 import lam.cobia.rpc.Provider;
+import lam.cobia.spi.ServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +15,13 @@ import org.slf4j.LoggerFactory;
  * @date: 2018/7/26 0:20
  * @version: 1.0
  */
-public class DirectRegistryProvider implements RegistryProvider {
+public class DirectRegistryProvider extends AbstractRegistryProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectRegistryProvider.class);
+
+    public DirectRegistryProvider() {
+        super();
+    }
 
     @Override
     public <T> boolean registry(Provider<T> provider, HostAndPort hap) {

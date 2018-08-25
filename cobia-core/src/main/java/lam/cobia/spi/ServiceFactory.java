@@ -14,6 +14,8 @@ import java.util.WeakHashMap;
 import org.apache.commons.lang3.StringUtils;
 
 import lam.cobia.core.exception.CobiaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 * <p>
@@ -27,6 +29,8 @@ import lam.cobia.core.exception.CobiaException;
 * @versio 1.0
 */
 public class ServiceFactory {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceFactory.class);
 	
 	private static final String PREFIX = "META-INF/services/";
 	
@@ -56,7 +60,9 @@ public class ServiceFactory {
 	
 	public static <T> T takeInstance(String name, Class<T> serviceTypeClass) {
 		checkAndGet(serviceTypeClass);
-		
+
+		LOGGER.debug("[takeInstance] name:{}, serviceTypeClass:{}", name, serviceTypeClass.getName());
+
 		Map<String, Object> m = map.get(serviceTypeClass);
 		if (m == null) {
 			m = new HashMap<String, Object>();
@@ -118,9 +124,9 @@ public class ServiceFactory {
 					m.put(name, t);
 					return t;
 				} catch (InstantiationException e) {
-					throw new CobiaException(e);
+					throw new CobiaException("name:" + name + ", serviceTypeClass:" + serviceTypeClass.getName(), e);
 				} catch (IllegalAccessException e) {
-					throw new CobiaException(e);
+					throw new CobiaException("name:" + name + ", serviceTypeClass:" + serviceTypeClass.getName(), e);
 				}
 			}
 			
