@@ -2,7 +2,8 @@
 
 ## TODO
 
-- develop registry type:Zookeeper Registry in tag <cobia:registry />
+- develop weight attribute to tag <cobia:service />
+- develop loadbalance according to weight attribute
 
 ## cobia tag
 
