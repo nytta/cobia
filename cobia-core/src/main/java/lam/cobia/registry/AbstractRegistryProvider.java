@@ -1,5 +1,9 @@
 package lam.cobia.registry;
 
+import lam.cobia.core.exception.CobiaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 /**
@@ -10,16 +14,18 @@ import java.util.Map;
  */
 public abstract class AbstractRegistryProvider implements RegistryProvider{
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRegistryProvider.class);
+
     private Map<String, Object> paramMap;
 
-    //protected RegistryProvider registryProvider;
-
     public AbstractRegistryProvider() {
-        //this.registryProvider = registryProvider;
     }
 
     @Override
     public Map<String, Object> getParamMap() {
+        if (this.paramMap == null) {
+            throw new CobiaException("paramMap is null, please set paramMap at first.");
+        }
         return this.paramMap;
     }
 
