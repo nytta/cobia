@@ -1,7 +1,9 @@
 package lam.cobia.rpc;
 
 import lam.cobia.config.spring.CRegistryBean;
+import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.NetUtil;
+import lam.cobia.core.util.ParamConstant;
 import lam.cobia.registry.RegistryConsumer;
 import lam.cobia.registry.RegistryProvider;
 import org.apache.commons.lang3.StringUtils;
@@ -65,7 +67,7 @@ public class DefaultProtocol implements Protocol{
 
 	
 	@Override
-	public <T> Exporter<T> export(Provider<T> provider) {
+	public <T> Exporter<T> export(Provider<T> provider, Map<String, Object> params) {
 
 	    DefaultExporter<T> exporter = new DefaultExporter<T>(provider, provider.getKey());
 
@@ -77,7 +79,7 @@ public class DefaultProtocol implements Protocol{
 		int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
 		HostAndPort hap = new HostAndPort().setHost(host).setPort(port);
 	    //do work: registry provider
-		CRegistryBean.getRegistryProvider().registry(provider, hap);
+		CRegistryBean.getRegistryProvider().registry(provider, hap, params);
 	    
 		return exporter;
 	}
@@ -87,11 +89,12 @@ public class DefaultProtocol implements Protocol{
 		//create DefaultInvoker<T> object with tcp client[]
 
 		//get provider list of interface:clazz
-		List<HostAndPort> list = CRegistryBean.getRegistryConsumer().getProviders(clazz);
+		List<RegistryData> list = CRegistryBean.getRegistryConsumer().getProviders(clazz);
 
 		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
-		for (HostAndPort hap : list) {
-			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(hap));
+		for (RegistryData registryData : list) {
+			params.put(ParamConstant.WEIGHT, registryData.getWeight());
+			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(registryData));
 			consumerMap.put(consumer, sharedObject);
 			consumers.add(consumer);
 		}

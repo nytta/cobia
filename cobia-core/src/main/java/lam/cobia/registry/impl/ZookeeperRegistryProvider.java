@@ -3,7 +3,9 @@ package lam.cobia.registry.impl;
 import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.exception.CobiaException;
 import lam.cobia.core.model.HostAndPort;
+import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.GsonUtil;
+import lam.cobia.core.util.ParamConstant;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.registry.AbstractRegistryProvider;
 import lam.cobia.registry.RegistryProvider;
@@ -20,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 /**
  * @description: ZookeeperRegistryProvider
@@ -87,7 +90,7 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
     }
 
     @Override
-    public <T> boolean registry(Provider<T> provider, HostAndPort hap) {
+    public <T> boolean registry(Provider<T> provider, HostAndPort hap, Map<String, Object> params) {
         initZkClient();
 
         String inerfacePath = ZOOKEEPER_ROOT_PATH + "/" + provider.getInterface().getName();
@@ -114,8 +117,14 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
                 throw new CobiaException("create persistent path " + inerfacePath + " to zookeeper error", e);
             }
         }
+        int weight = ParameterUtil.getParameterInt(ParamConstant.WEIGHT, params, ParamConstant.WEIGHT_DEFAULT);
 
-        Object data = GsonUtil.toJson(hap);
+        RegistryData registryData = new RegistryData();
+        registryData.setHost(hap.getHost());
+        registryData.setPort(hap.getPort());
+        registryData.setWeight(weight);
+
+        Object data = GsonUtil.toJson(registryData);
         boolean nodeExists = false;
         try {
             path = zkClient.create(path, data, CreateMode.EPHEMERAL);
@@ -128,7 +137,8 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
             }
         }
         if (!nodeExists) {
-            LOGGER.info("[registry] registry provider " + provider.getInterface().getName() + " to zookeeper path " + path + " success.");
+            LOGGER.info("[registry] registry provider " + provider.getInterface().getName() + " to zookeeper ephemeral path " + path
+                    + " with data:" + data  + " success.");
         } else {
             boolean returnNullIfPathNotExists = true;
             String oldData = zkClient.readData(path, returnNullIfPathNotExists);

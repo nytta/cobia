@@ -68,6 +68,19 @@ public class ParameterUtil {
 			return defaultValue;
 		}
 	}
+
+	public static int getParameterInt(String key, Map<String, Object> params, int defaultValue) {
+		String value = getParameter(key);
+		if (value != null) {
+			return Integer.parseInt(value);
+		}
+		Object vObject = params.get(key);
+		if (vObject != null) {
+			return Integer.parseInt(vObject.toString());
+		}
+		return defaultValue;
+	}
+
 	
 	public static boolean getParameterBoolean(String key) {
 		String value = getParameter(key);

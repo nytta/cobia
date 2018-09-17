@@ -7,6 +7,8 @@ import java.util.List;
 import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.exception.CobiaException;
 import lam.cobia.core.model.HostAndPort;
+import lam.cobia.core.model.RegistryData;
+import lam.cobia.core.util.GsonUtil;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.registry.AbstractRegistryConsumer;
 import lam.cobia.registry.RegistryConsumer;
@@ -86,7 +88,7 @@ public class ZookeeperRegistryConsumer extends AbstractRegistryConsumer {
     }
 
     @Override
-    public <T> List<HostAndPort> getProviders(Class<T> interfaceClass) {
+    public <T> List<RegistryData> getProviders(Class<T> interfaceClass) {
         initZkClient();
 
         String interfacePath = ZOOKEEPER_ROOT_PATH + "/" + interfaceClass.getName();
@@ -97,23 +99,13 @@ public class ZookeeperRegistryConsumer extends AbstractRegistryConsumer {
         if (CollectionUtils.isEmpty(addresses)) {
             return new ArrayList<>();
         }
-        List<HostAndPort> list = new ArrayList<HostAndPort>(addresses.size());
+        List<RegistryData> list = new ArrayList<RegistryData>(addresses.size());
         for (String address : addresses) {
-            String host;
-            int port;
-            int index = address.indexOf(":");
-            if (index == -1) {
-                host = address;
-                port = 80;
-            } else {
-                String[] strs = address.split(":");
-                host = strs[0];
-                port = Integer.parseInt(strs[1]);
-            }
-            HostAndPort hap = new HostAndPort().setHost(host).setPort(port);
-            list.add(hap);
+            String data = zkClient.readData(interfacePath + "/" + address);
+            RegistryData registryData = GsonUtil.fromJson(data, RegistryData.class);
+            list.add(registryData);
         }
-        LOGGER.info("[getProviders] provider HostAndPort list:" + list);
+        LOGGER.info("[getProviders] provider RegistryData list:" + list + " of inteface " + interfaceClass.getName());
         return list;
     }
 }

@@ -1,5 +1,9 @@
 package lam.cobia.rpc;
 
+import lam.cobia.core.util.BaseParameter;
+
+import java.util.Map;
+
 /**
 * <p>
 * cobia

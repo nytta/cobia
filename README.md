@@ -2,8 +2,7 @@
 
 ## TODO
 
-- develop weight attribute to tag <cobia:service />
-- develop loadbalance according to weight attribute
+- develop cluster consumer: invoke the least active service.
 
 ## cobia tag
 
@@ -14,8 +13,9 @@
 |interface|required|string|Interface implemented by service|
 |ref|required|string|bean id of service|
 |registry|optional|string|registry address|
+|weight|optional|int|weight to invoke the service|
 
-### <cobia:reference />
+### <cobia:reference /> 
 
 | name |optional | type | description|
 | --- | ----- | ----- | --- |
