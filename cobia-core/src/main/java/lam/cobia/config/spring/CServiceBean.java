@@ -3,6 +3,7 @@ package lam.cobia.config.spring;
 import java.util.Objects;
 
 import lam.cobia.core.util.GsonUtil;
+import lam.cobia.core.util.ParamConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,9 @@ public class CServiceBean<T> extends AbstractConfig
 	private String id;
 
 	@ParamAnnotation
+	private Integer weight;
+
+	@ParamAnnotation
 	private String registry = "zookeeper"; //default registry:zookeeper
 	
 	//=============
@@ -86,7 +90,7 @@ public class CServiceBean<T> extends AbstractConfig
 		LOGGER.info(event.getClass().getName());
 		if (ContextRefreshedEvent.class.getName().equals(event.getClass().getName())) {
 			//do export bean
-			ServiceFactory.takeDefaultInstance(Service.class).export(getRef(), (Class<T>) interfaceClass);
+			ServiceFactory.takeDefaultInstance(Service.class).export(getRef(), (Class<T>) interfaceClass, super.getParams());
 		}
 	}
 	
@@ -137,6 +141,14 @@ public class CServiceBean<T> extends AbstractConfig
 		return ref;
 	}
 
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
+	}
+
 	public String getRegistry() {
 		return registry;
 	}
@@ -154,7 +166,9 @@ public class CServiceBean<T> extends AbstractConfig
 				", ref=" + ref +
 				", beanName='" + beanName + '\'' +
 				", id='" + id + '\'' +
+				", weight=" + weight +
 				", registry='" + registry + '\'' +
+				", params=" + params +
 				'}';
 	}
 }

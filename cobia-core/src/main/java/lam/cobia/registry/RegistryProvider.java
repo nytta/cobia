@@ -5,6 +5,8 @@ import lam.cobia.core.util.ParameterMap;
 import lam.cobia.rpc.Provider;
 import lam.cobia.spi.Spiable;
 
+import java.util.Map;
+
 /**
  * @description: RegistryProvider
  * @author: linanmiao
@@ -14,6 +16,6 @@ import lam.cobia.spi.Spiable;
 @Spiable("direct")
 public interface RegistryProvider extends ParameterMap {
 
-    public <T> boolean registry(Provider<T> provider, HostAndPort hap);
+    public <T> boolean registry(Provider<T> provider, HostAndPort hap, Map<String, Object> params);
 
 }

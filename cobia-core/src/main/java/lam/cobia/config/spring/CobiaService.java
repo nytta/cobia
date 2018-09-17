@@ -2,6 +2,7 @@ package lam.cobia.config.spring;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lam.cobia.proxy.ProviderProxyFactory;
 import lam.cobia.rpc.Exporter;
@@ -26,9 +27,9 @@ public class CobiaService implements Service{
 	private final List<Exporter<?>> exporters = new ArrayList<Exporter<?>>();
 	
 	@Override
-	public <T> void export(T ref, Class<T> clazz) {
+	public <T> void export(T ref, Class<T> clazz, Map<String, Object> params) {
 		Provider<T> provider = providerProxyFactory.getProvider(ref, clazz);
-		Exporter<T> exporter = protocol.export(provider);
+		Exporter<T> exporter = protocol.export(provider, params);
 		exporters.add(exporter);
 	}
 	

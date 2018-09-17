@@ -4,6 +4,8 @@ import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.constant.Constant;
 import lam.cobia.core.exception.CobiaException;
 import lam.cobia.core.model.HostAndPort;
+import lam.cobia.core.model.RegistryData;
+import lam.cobia.core.util.ParamConstant;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.registry.AbstractRegistryConsumer;
 import lam.cobia.registry.RegistryConsumer;
@@ -30,7 +32,7 @@ public class DirectRegistryConsumer extends AbstractRegistryConsumer {
     }
 
     @Override
-    public <T> List<HostAndPort> getProviders(Class<T> interfaceClass) {
+    public <T> List<RegistryData> getProviders(Class<T> interfaceClass) {
         //get server info from tag <registry /> .
         final String addressKey = "address";
         if (!getParamMap().containsKey(addressKey)) {
@@ -52,8 +54,11 @@ public class DirectRegistryConsumer extends AbstractRegistryConsumer {
             port = Integer.parseInt(strs[1]);
         }
 
-        List<HostAndPort> list = new ArrayList<HostAndPort>();
-        HostAndPort hap = new HostAndPort().setHost(host).setPort(port);
+        List<RegistryData> list = new ArrayList<RegistryData>();
+        RegistryData hap = new RegistryData();
+        hap.setHost(host);
+        hap.setPort(port);
+        hap.setWeight(ParamConstant.WEIGHT_DEFAULT);
         list.add(hap);
 
         LOGGER.info("[getProviders] interface:{}, provider list:{}", interfaceClass.getName(), list);

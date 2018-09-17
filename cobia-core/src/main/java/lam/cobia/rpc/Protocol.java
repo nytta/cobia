@@ -16,7 +16,7 @@ import lam.cobia.spi.Spiable;
 @Spiable("default")
 public interface Protocol extends Closeable{
 	
-	public <T> Exporter<T> export(Provider<T> provider);
+	public <T> Exporter<T> export(Provider<T> provider, Map<String, Object> params);
 	
 	public <T> Consumer<T> refer(Class<T> clazz, Map<String, Object> params);
 	

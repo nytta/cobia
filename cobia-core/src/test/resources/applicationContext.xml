@@ -9,15 +9,15 @@
 	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-	<cobia:registry type="direct" address=""/>
+	<cobia:registry type="zookeeper" address="192.168.20.112:2181"/>
 
 	<bean id="myService" class="lam.cobia.core.service.MyService"></bean>
-	<cobia:service interface="lam.cobia.core.service.IMyService" ref="myService"></cobia:service>
+	<cobia:service interface="lam.cobia.core.service.IMyService" ref="myService" weight="1"></cobia:service>
 	<!-- 
 	<cobia:service interface="lam.cobia.core.service.IMyService" ref="myService"></cobia:service>
 	-->
 	<!--
 	-->
 	<bean id="yourService" class="lam.cobia.core.service.YourService"></bean>
-	<cobia:service interface="lam.cobia.core.service.IYourService" ref="yourService"></cobia:service>
+	<cobia:service interface="lam.cobia.core.service.IYourService" ref="yourService" weight="1"></cobia:service>
 </beans>

@@ -30,6 +30,11 @@
 							<xsd:documentation><![CDATA[ registry type of service. ]]></xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
+					<xsd:attribute name="weight" type="xsd:int" use="optional">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[ invoke weight of service. ]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>

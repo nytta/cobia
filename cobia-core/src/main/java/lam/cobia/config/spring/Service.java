@@ -2,6 +2,8 @@ package lam.cobia.config.spring;
 
 import lam.cobia.spi.Spiable;
 
+import java.util.Map;
+
 /**
 * <p>
 * cobia
@@ -13,6 +15,6 @@ import lam.cobia.spi.Spiable;
 @Spiable("cobia")
 public interface Service {
 	
-	public <T> void export(T ref, Class<T> clazz);
+	public <T> void export(T ref, Class<T> clazz, Map<String, Object> params);
 
 }
