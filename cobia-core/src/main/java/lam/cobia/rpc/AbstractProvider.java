@@ -1,8 +1,10 @@
 package lam.cobia.rpc;
 
+import lam.cobia.core.NotNegativeLong;
 import lam.cobia.core.util.BaseParameter;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
 * <p>
@@ -13,6 +15,8 @@ import java.util.Map;
 * @versio 1.0
 */
 public abstract class AbstractProvider<T> implements Provider<T>{
+
+	private NotNegativeLong invokeCount = new NotNegativeLong(0);
 	
 	private T proxy;
 	
@@ -28,7 +32,14 @@ public abstract class AbstractProvider<T> implements Provider<T>{
 		String methodName = invocation.getMethod();
 		Class<?>[] parameterTypes = invocation.getParameterTypes();
 		Object[] arguments = invocation.getArguments();
+		//increment invoking count
+		invokeCount.incrementAndGet();
+
 		Object result = doInvoke(proxy, methodName, parameterTypes, arguments);
+
+		//descrement invokeing count
+		invokeCount.decrementAndGet();
+
 		return new DefaultResult().setValue(result);
 	}
 	
