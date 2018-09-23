@@ -2,7 +2,7 @@
 
 ## TODO
 
-- handle the situation: provider occurs exception.
+- develop provider chain: exception privoder and count provider.
 - develop cluster consumer: invoke the least active service.
 
 ## cobia tag
