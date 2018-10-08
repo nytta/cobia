@@ -105,7 +105,7 @@ public class ZookeeperRegistryConsumer extends AbstractRegistryConsumer {
             RegistryData registryData = GsonUtil.fromJson(data, RegistryData.class);
             list.add(registryData);
         }
-        LOGGER.info("[getProviders] provider RegistryData list:" + list + " of inteface " + interfaceClass.getName());
+        LOGGER.info("[getProviders] provider RegistryData list:" + list + " of interface " + interfaceClass.getName());
         return list;
     }
 }
