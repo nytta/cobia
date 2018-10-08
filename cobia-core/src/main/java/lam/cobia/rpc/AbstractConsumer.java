@@ -1,5 +1,6 @@
 package lam.cobia.rpc;
 
+import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.ParameterUtil;
 
 import java.util.HashMap;
@@ -19,19 +20,28 @@ public abstract class AbstractConsumer<T> implements Consumer<T>{
 	private Class<T> clazz;
 
 	private Map<String, Object> params;
+
+	private RegistryData registryData;
 	
-	public AbstractConsumer(Class<T> clazz, Map<String, Object> params) {
+	public AbstractConsumer(Class<T> clazz, Map<String, Object> params, RegistryData registryData) {
 		Objects.requireNonNull(clazz, "Class<T> clazz is null");
 		Objects.requireNonNull(params, "Map<String, Object> params is null");
+		Objects.requireNonNull(registryData, "param of RegistryData type is null");
 		this.clazz = clazz;
 		this.params = params;
+		this.registryData = registryData;
 	}
 	
 	@Override
 	public String getKey() {
 		return this.clazz.getName();
 	}
-	
+
+	@Override
+	public RegistryData getRegistryData() {
+		return this.registryData;
+	}
+
 	@Override
 	public Class<T> getInterface() {
 		return this.clazz;

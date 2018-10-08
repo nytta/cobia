@@ -1,5 +1,8 @@
 package lam.cobia.cluster;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lam.cobia.core.util.ParamConstant;
 import lam.cobia.loadbalance.LoadBalance;
 import lam.cobia.rpc.Consumer;
@@ -16,6 +19,8 @@ import java.util.Random;
  * @version: 1.0
  */
 public class FailoverCluster<T> extends AbstractCluster<T>{
+
+    private static Logger LOGGER = LoggerFactory.getLogger(FailoverCluster.class);
 
     private int retryTime = 2;
 
@@ -34,7 +39,8 @@ public class FailoverCluster<T> extends AbstractCluster<T>{
                 Result result = consumer.invoke(invocation);
                 return result;
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("[doInvoke] interface:{}, method:{}, parameterTypes:{}, arguments:{}",
+                       invocation.getInterface(), invocation.getMethod(), invocation.getParameterTypes(), invocation.getArguments(), e);
             }
         }
         //shouldn't happen.

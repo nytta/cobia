@@ -1,6 +1,8 @@
 package lam.cobia.cluster;
 
+import lam.cobia.core.model.RegistryData;
 import lam.cobia.loadbalance.LoadBalance;
+import lam.cobia.registry.Subcriber;
 import lam.cobia.rpc.Consumer;
 import lam.cobia.rpc.Invocation;
 import lam.cobia.rpc.Result;
@@ -13,7 +15,7 @@ import java.util.List;
  * @date: 2018/7/21 12:04
  * @version: 1.0
  */
-public abstract class AbstractCluster<T> implements Cluster<T>{
+public abstract class AbstractCluster<T> implements Cluster<T>, Subcriber {
 
     private Class<T> interfaceClass;
 
@@ -33,6 +35,11 @@ public abstract class AbstractCluster<T> implements Cluster<T>{
     @Override
     public String getKey() {
         return interfaceClass.getName();
+    }
+
+    @Override
+    public RegistryData getRegistryData() {
+        throw new IllegalStateException("Can invoke this method");
     }
 
     @Override
@@ -69,6 +76,15 @@ public abstract class AbstractCluster<T> implements Cluster<T>{
         } else {
             return consumer;
         }
+    }
+
+    @Override
+    public final void subscribe() {
+        this.consumers.forEach((Consumer<T> consumer) -> {
+            RegistryData registryData = consumer.getRegistryData();
+            //reload consumer list
+            //TODO
+        });
     }
 
     private void invokeIllegal() {

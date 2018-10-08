@@ -1,5 +1,6 @@
 package lam.cobia.rpc;
 
+import lam.cobia.cluster.AbstractCluster;
 import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.NetUtil;
@@ -94,12 +95,12 @@ public class DefaultProtocol implements Protocol{
 		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
 		for (RegistryData registryData : list) {
 			params.put(ParamConstant.WEIGHT, registryData.getWeight());
-			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(registryData));
+			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(registryData), registryData);
 			consumerMap.put(consumer, sharedObject);
 			consumers.add(consumer);
 		}
 		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
-		Cluster<T> cluster = new FailoverCluster<T>(clazz, consumers, loadBalance);
+		AbstractCluster<T> cluster = new FailoverCluster<T>(clazz, consumers, loadBalance);
 		return cluster;
 	}
 	
@@ -128,7 +129,7 @@ public class DefaultProtocol implements Protocol{
 		return server;
 	}
 	
-	private Client getClient(HostAndPort hap) {
+	private Client getClient(RegistryData hap) {
 		String serverHost = hap.getHost();
 		int port = hap.getPort();
 		InetSocketAddress remoteAddress = new InetSocketAddress(serverHost, port);
