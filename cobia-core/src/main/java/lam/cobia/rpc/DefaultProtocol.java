@@ -24,6 +24,9 @@ import lam.cobia.core.constant.Constant;
 import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.loadbalance.LoadBalance;
+import lam.cobia.registry.Subcriber;
+import lam.cobia.registry.ZookeeperSubcriber;
+import lam.cobia.registry.impl.ZookeeperRegistryConsumer;
 import lam.cobia.remoting.ChannelHandler;
 import lam.cobia.remoting.Client;
 import lam.cobia.remoting.DefaultChannelHanlder;
@@ -87,7 +90,13 @@ public class DefaultProtocol implements Protocol{
 
 	@Override
 	public <T> Consumer<T> refer(Class<T> clazz, Map<String, Object> params) {
-		//create DefaultInvoker<T> object with tcp client[]
+
+		//registry subcriber to consumer client.
+		Subcriber subcriber = null;
+		if (CRegistryBean.getRegistryConsumer() instanceof ZookeeperRegistryConsumer) {
+			subcriber = new ZookeeperSubcriber();
+			((ZookeeperRegistryConsumer)CRegistryBean.getRegistryConsumer()).setSubcriber(subcriber);
+		}
 
 		//get provider list of interface:clazz
 		List<RegistryData> list = CRegistryBean.getRegistryConsumer().getProviders(clazz);
@@ -101,6 +110,12 @@ public class DefaultProtocol implements Protocol{
 		}
 		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
 		AbstractCluster<T> cluster = new FailoverCluster<T>(clazz, consumers, loadBalance);
+
+		//to set consumer cluster, let it can be reload consumer when provider is updated.
+		if (CRegistryBean.getRegistryConsumer() instanceof ZookeeperRegistryConsumer) {
+			((ZookeeperSubcriber) subcriber).setAbstractCluster(cluster);
+		}
+
 		return cluster;
 	}
 	
@@ -129,7 +144,7 @@ public class DefaultProtocol implements Protocol{
 		return server;
 	}
 	
-	private Client getClient(RegistryData hap) {
+	public Client getClient(RegistryData hap) {
 		String serverHost = hap.getHost();
 		int port = hap.getPort();
 		InetSocketAddress remoteAddress = new InetSocketAddress(serverHost, port);

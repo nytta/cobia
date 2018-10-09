@@ -4,15 +4,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.exception.CobiaException;
-import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.GsonUtil;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.registry.AbstractRegistryConsumer;
-import lam.cobia.registry.RegistryConsumer;
-import lam.cobia.spi.ServiceFactory;
+
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.ZkConnection;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
@@ -99,6 +96,23 @@ public class ZookeeperRegistryConsumer extends AbstractRegistryConsumer {
         if (CollectionUtils.isEmpty(addresses)) {
             return new ArrayList<>();
         }
+
+        //subscribe change of child list
+        zkClient.subscribeChildChanges(interfacePath, (String parentPath, List<String> currentChilds) -> {
+            LOGGER.info("[subscribeChildChanges] path:{}, current children:{}", parentPath, currentChilds);
+            List<RegistryData> registryDatas = new ArrayList<>();
+            currentChilds.forEach((String child) -> {
+                String childPath = parentPath + "/" + child;
+                String childData = zkClient.readData(childPath);
+
+                LOGGER.info("[subscribeChildChanges] path:{}, data:{}", childPath, childData);
+
+                RegistryData registryData = GsonUtil.fromJson(childData, RegistryData.class);
+                registryDatas.add(registryData);
+            });
+            super.subcriber.subscribe(interfaceClass.getName(), registryDatas);
+        });
+
         List<RegistryData> list = new ArrayList<RegistryData>(addresses.size());
         for (String address : addresses) {
             String data = zkClient.readData(interfacePath + "/" + address);

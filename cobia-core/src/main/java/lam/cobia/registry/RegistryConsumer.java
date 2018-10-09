@@ -19,4 +19,6 @@ public interface RegistryConsumer extends ParameterMap {
 
     public <T> List<RegistryData> getProviders(Class<T> interfaceClass);
 
+    public void setSubcriber(Subcriber subcriber);
+
 }

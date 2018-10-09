@@ -1,13 +1,24 @@
 package lam.cobia.cluster;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lam.cobia.core.model.RegistryData;
+import lam.cobia.core.util.ParamConstant;
 import lam.cobia.loadbalance.LoadBalance;
 import lam.cobia.registry.Subcriber;
 import lam.cobia.rpc.Consumer;
+import lam.cobia.rpc.DefaultConsumer;
+import lam.cobia.rpc.DefaultProtocol;
 import lam.cobia.rpc.Invocation;
+import lam.cobia.rpc.Protocol;
 import lam.cobia.rpc.Result;
+import lam.cobia.spi.ServiceFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description: AbstractCluster
@@ -15,7 +26,9 @@ import java.util.List;
  * @date: 2018/7/21 12:04
  * @version: 1.0
  */
-public abstract class AbstractCluster<T> implements Cluster<T>, Subcriber {
+public abstract class AbstractCluster<T> implements Cluster<T> {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(AbstractCluster.class);
 
     private Class<T> interfaceClass;
 
@@ -24,10 +37,10 @@ public abstract class AbstractCluster<T> implements Cluster<T>, Subcriber {
     private LoadBalance loadBalance;
 
     public AbstractCluster(Class<T> interfaceClass, List<Consumer<T>> consumers, LoadBalance loadBalance) {
-        this.interfaceClass = interfaceClass;
         if (consumers == null || consumers.isEmpty()) {
             throw new IllegalStateException("List<Consumer<T> consumers is null or empty.");
         }
+        this.interfaceClass = interfaceClass;
         this.consumers = consumers;
         this.loadBalance = loadBalance;
     }
@@ -65,6 +78,49 @@ public abstract class AbstractCluster<T> implements Cluster<T>, Subcriber {
 
     public abstract Result doInvoke(Invocation invocation);
 
+    public void reloadConsumers(String interfaceName, List<RegistryData> registryDatas) {
+        LOGGER.info("[reloadConsumers] interface:{}, registryDatas:{}", interfaceName, registryDatas);
+        synchronized (this) {
+            final String spiName = "default";
+            Protocol protocol = ServiceFactory.takeInstance(spiName, lam.cobia.rpc.Protocol.class);
+            if (protocol == null) {
+                throw new IllegalStateException("value of key:" + spiName + " in spi:" + lam.cobia.rpc.Protocol.class.getName() + " is null");
+            }
+            if (!(protocol instanceof DefaultProtocol)) {
+                throw new IllegalStateException("value type: " + protocol + " of key:" + spiName
+                                                + " in spi:" + lam.cobia.rpc.Protocol.class.getName() + " is not type of "
+                                                + DefaultProtocol.class.getName());
+            }
+            DefaultProtocol defaultProtocol = (DefaultProtocol) protocol;
+            List<Consumer<T>> consumerNewList = new ArrayList<>(this.consumers.size());
+            boolean consumerExists;
+            for (RegistryData registryData : registryDatas) {
+                consumerExists = false;
+                for (Consumer<T> consumer : this.consumers) {
+                    if (consumer.getRegistryData().getHost().equals(registryData.getHost())) {
+                        consumerExists = true;
+                        consumerNewList.add(consumer);
+
+                        LOGGER.info("[reloadConsumers] interface:{}, get old Consumer:{}", interfaceClass.getName(), consumer);
+                        break ;
+                    }
+                }
+
+                if (!consumerExists) {
+                    //new provider
+                    Map<String, Object> params = new HashMap<String, Object>();
+                    params.put(ParamConstant.WEIGHT, registryData.getWeight());
+                    Consumer<T> newConsumer = new DefaultConsumer<T>(interfaceClass, params, defaultProtocol.getClient(registryData), registryData);
+                    consumerNewList.add(newConsumer);
+
+                    LOGGER.info("[reloadConsumers] interface:{}, create new Consumer:{}", interfaceClass.getName(), newConsumer);
+                }
+            }
+            this.consumers = consumerNewList;
+        }
+        LOGGER.info("[reloadConsumers] interface:{} end, new consumers:{}", interfaceName, this.consumers);
+    }
+
     protected <T> Consumer<T> select(List<Consumer<T>> consumers, Consumer<T> selectedCosnumer, Invocation invocation) {
         if (consumers == null || consumers.isEmpty()) {
             return null;
@@ -76,15 +132,6 @@ public abstract class AbstractCluster<T> implements Cluster<T>, Subcriber {
         } else {
             return consumer;
         }
-    }
-
-    @Override
-    public final void subscribe() {
-        this.consumers.forEach((Consumer<T> consumer) -> {
-            RegistryData registryData = consumer.getRegistryData();
-            //reload consumer list
-            //TODO
-        });
     }
 
     private void invokeIllegal() {

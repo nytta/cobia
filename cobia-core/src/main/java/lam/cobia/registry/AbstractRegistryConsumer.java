@@ -18,6 +18,8 @@ public abstract class AbstractRegistryConsumer implements RegistryConsumer{
 
     private Map<String, Object> paramMap;
 
+    protected Subcriber subcriber;
+
     public AbstractRegistryConsumer() {
     }
 
@@ -32,5 +34,10 @@ public abstract class AbstractRegistryConsumer implements RegistryConsumer{
     @Override
     public void setParamMap(Map<String, Object> paramMap) {
         this.paramMap = paramMap;
+    }
+
+    @Override
+    public void setSubcriber(Subcriber subcriber) {
+        this.subcriber = subcriber;
     }
 }
