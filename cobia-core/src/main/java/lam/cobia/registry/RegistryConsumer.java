@@ -1,9 +1,7 @@
 package lam.cobia.registry;
 
-import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.ParameterMap;
-import lam.cobia.rpc.Consumer;
 import lam.cobia.spi.Spiable;
 
 import java.util.List;
@@ -17,8 +15,6 @@ import java.util.List;
 @Spiable("direct")
 public interface RegistryConsumer extends ParameterMap {
 
-    public <T> List<RegistryData> getProviders(Class<T> interfaceClass);
-
-    public void setSubcriber(Subcriber subcriber);
+    public <T> List<RegistryData> getProviders(Class<T> interfaceClass, RegistrySubcriber registrySubcriber);
 
 }

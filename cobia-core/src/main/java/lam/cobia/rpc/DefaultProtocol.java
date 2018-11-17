@@ -5,9 +5,6 @@ import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.NetUtil;
 import lam.cobia.core.util.ParamConstant;
-import lam.cobia.registry.RegistryConsumer;
-import lam.cobia.registry.RegistryProvider;
-import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -17,15 +14,13 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import lam.cobia.cluster.Cluster;
-import lam.cobia.cluster.FailoverCluster;
 import lam.cobia.cluster.FailoverCluster;
 import lam.cobia.core.constant.Constant;
 import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.loadbalance.LoadBalance;
-import lam.cobia.registry.Subcriber;
-import lam.cobia.registry.ZookeeperSubcriber;
+import lam.cobia.registry.RegistrySubcriber;
+import lam.cobia.registry.impl.ZookeeperRegistrySubcriber;
 import lam.cobia.registry.impl.ZookeeperRegistryConsumer;
 import lam.cobia.remoting.ChannelHandler;
 import lam.cobia.remoting.Client;
@@ -35,8 +30,6 @@ import lam.cobia.remoting.HeaderExchangeServer;
 import lam.cobia.remoting.transport.netty.NettyClient;
 import lam.cobia.remoting.transport.netty.NettyServer;
 import lam.cobia.spi.ServiceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
 * <p>
@@ -91,15 +84,11 @@ public class DefaultProtocol implements Protocol{
 	@Override
 	public <T> Consumer<T> refer(Class<T> clazz, Map<String, Object> params) {
 
-		//registry subcriber to consumer client.
-		Subcriber subcriber = null;
-		if (CRegistryBean.getRegistryConsumer() instanceof ZookeeperRegistryConsumer) {
-			subcriber = new ZookeeperSubcriber();
-			((ZookeeperRegistryConsumer)CRegistryBean.getRegistryConsumer()).setSubcriber(subcriber);
-		}
+		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
+		AbstractCluster<T> cluster = new FailoverCluster<T>();
 
-		//get provider list of interface:clazz
-		List<RegistryData> list = CRegistryBean.getRegistryConsumer().getProviders(clazz);
+		//get provider list of interface:clazz, and registry subcriber to consumer client.
+		List<RegistryData> list = CRegistryBean.getRegistryConsumer().getProviders(clazz, cluster);
 
 		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
 		for (RegistryData registryData : list) {
@@ -108,13 +97,10 @@ public class DefaultProtocol implements Protocol{
 			consumerMap.put(consumer, sharedObject);
 			consumers.add(consumer);
 		}
-		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
-		AbstractCluster<T> cluster = new FailoverCluster<T>(clazz, consumers, loadBalance);
 
-		//to set consumer cluster, let it can be reload consumer when provider is updated.
-		if (CRegistryBean.getRegistryConsumer() instanceof ZookeeperRegistryConsumer) {
-			((ZookeeperSubcriber) subcriber).setAbstractCluster(cluster);
-		}
+		cluster.setInterfaceClass(clazz);
+		cluster.setConsumers(consumers);
+		cluster.setLoadBalance(loadBalance);
 
 		return cluster;
 	}

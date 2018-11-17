@@ -40,6 +40,7 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
 
     public ZookeeperRegistryProvider() {
         super();
+        initZkClient();
     }
 
     private void initZkClient() {
@@ -91,7 +92,6 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
 
     @Override
     public <T> boolean registry(Provider<T> provider, HostAndPort hap, Map<String, Object> params) {
-        initZkClient();
 
         String inerfacePath = ZOOKEEPER_ROOT_PATH + "/" + provider.getInterface().getName();
         String path = inerfacePath + "/" + hap.getHost() + ":" + hap.getPort();
