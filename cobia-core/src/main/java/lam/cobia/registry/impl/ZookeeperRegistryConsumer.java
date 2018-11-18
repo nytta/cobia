@@ -4,15 +4,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.exception.CobiaException;
-import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.GsonUtil;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.registry.AbstractRegistryConsumer;
-import lam.cobia.registry.RegistryConsumer;
-import lam.cobia.spi.ServiceFactory;
+import lam.cobia.registry.RegistrySubcriber;
+
+import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.ZkConnection;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
@@ -38,6 +37,7 @@ public class ZookeeperRegistryConsumer extends AbstractRegistryConsumer {
 
     public ZookeeperRegistryConsumer() {
         super();
+        initZkClient();
     }
 
     private void initZkClient() {
@@ -88,24 +88,58 @@ public class ZookeeperRegistryConsumer extends AbstractRegistryConsumer {
     }
 
     @Override
-    public <T> List<RegistryData> getProviders(Class<T> interfaceClass) {
-        initZkClient();
+    public <T> List<RegistryData> getProviders(Class<T> interfaceClass, RegistrySubcriber registrySubcriber) {
+        if (registrySubcriber == null) {
+            throw new IllegalArgumentException("RegistrySubcriber registrySubcriber is null.");
+        }
 
         String interfacePath = ZOOKEEPER_ROOT_PATH + "/" + interfaceClass.getName();
 
+        //provider address list
         List<String> addresses = zkClient.getChildren(interfacePath);
+
         LOGGER.info("[getProviders] get provider list of interface " + interfaceClass.getName() + ", list:" + addresses);
 
         if (CollectionUtils.isEmpty(addresses)) {
             return new ArrayList<>();
         }
+
+        //subscribes provider-list changes of interface provider
+        zkClient.subscribeChildChanges(interfacePath, (String parentPath, List<String> currentChilds) -> {
+            LOGGER.info("[subscribeChildChanges] path:{}, current children:{}", parentPath, currentChilds);
+            List<RegistryData> registryDatas = new ArrayList<>();
+            currentChilds.forEach((String child) -> {
+                String childPath = parentPath + "/" + child;
+                String childData = zkClient.readData(childPath);
+
+                LOGGER.info("[subscribeChildChanges] path:{}, data:{}", childPath, childData);
+
+                RegistryData registryData = GsonUtil.fromJson(childData, RegistryData.class);
+                registryDatas.add(registryData);
+            });
+            registrySubcriber.onProvidersChanges(interfaceClass, registryDatas);
+        });
+
         List<RegistryData> list = new ArrayList<RegistryData>(addresses.size());
         for (String address : addresses) {
             String data = zkClient.readData(interfacePath + "/" + address);
             RegistryData registryData = GsonUtil.fromJson(data, RegistryData.class);
             list.add(registryData);
+
+            zkClient.subscribeDataChanges(interfacePath + "/" + address, new IZkDataListener() {
+                @Override
+                public void handleDataChange(String s, Object o) throws Exception {
+                    LOGGER.info("[subscribeDataChanges] {}:{}", s, o);
+                    //TODO reload provider config with registrySubcribe.onProviderChanges method.
+                }
+
+                @Override
+                public void handleDataDeleted(String s) throws Exception {
+
+                }
+            });
         }
-        LOGGER.info("[getProviders] provider RegistryData list:" + list + " of inteface " + interfaceClass.getName());
+        LOGGER.info("[getProviders] provider RegistryData list:" + list + " of interface " + interfaceClass.getName());
         return list;
     }
 }

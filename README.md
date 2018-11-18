@@ -2,7 +2,7 @@
 
 ## TODO
 
-- develop provider chain: exception privoder and count provider.
+- subscribe to the change of providers using zookeeper, use provider list in local cache at first.
 - develop cluster consumer: invoke the least active service.
 
 ## cobia tag

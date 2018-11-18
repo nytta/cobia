@@ -1,6 +1,8 @@
 package lam.cobia.rpc;
 
 import lam.cobia.core.exception.CobiaException;
+import lam.cobia.core.model.RegistryData;
+import lam.cobia.core.util.GsonUtil;
 import lam.cobia.core.util.NetUtil;
 import lam.cobia.remoting.*;
 import org.springframework.util.CollectionUtils;
@@ -19,8 +21,8 @@ public class DefaultConsumer<T> extends AbstractConsumer<T>{
 	
 	private Client client;
 
-	public DefaultConsumer(Class<T> clazz, Map<String, Object> params, Client client) {
-		super(clazz, params);
+	public DefaultConsumer(Class<T> clazz, Map<String, Object> params, Client client, RegistryData registryData) {
+		super(clazz, params, registryData);
 		this.client = client;
 	}
 
@@ -67,6 +69,8 @@ public class DefaultConsumer<T> extends AbstractConsumer<T>{
 		}
 	}
 
-
-
+	@Override
+	public String toString() {
+		return GsonUtil.toJson(this);
+	}
 }

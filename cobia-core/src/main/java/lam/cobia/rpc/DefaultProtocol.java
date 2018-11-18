@@ -1,12 +1,10 @@
 package lam.cobia.rpc;
 
+import lam.cobia.cluster.AbstractCluster;
 import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.NetUtil;
 import lam.cobia.core.util.ParamConstant;
-import lam.cobia.registry.RegistryConsumer;
-import lam.cobia.registry.RegistryProvider;
-import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -16,8 +14,6 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import lam.cobia.cluster.Cluster;
-import lam.cobia.cluster.FailoverCluster;
 import lam.cobia.cluster.FailoverCluster;
 import lam.cobia.core.constant.Constant;
 import lam.cobia.core.model.HostAndPort;
@@ -31,8 +27,6 @@ import lam.cobia.remoting.HeaderExchangeServer;
 import lam.cobia.remoting.transport.netty.NettyClient;
 import lam.cobia.remoting.transport.netty.NettyServer;
 import lam.cobia.spi.ServiceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
 * <p>
@@ -86,20 +80,25 @@ public class DefaultProtocol implements Protocol{
 
 	@Override
 	public <T> Consumer<T> refer(Class<T> clazz, Map<String, Object> params) {
-		//create DefaultInvoker<T> object with tcp client[]
 
-		//get provider list of interface:clazz
-		List<RegistryData> list = CRegistryBean.getRegistryConsumer().getProviders(clazz);
+		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
+		AbstractCluster<T> cluster = new FailoverCluster<T>();
+
+		//get provider list of interface:clazz, and registry subcriber to consumer client.
+		List<RegistryData> list = CRegistryBean.getRegistryConsumer().getProviders(clazz, cluster);
 
 		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
 		for (RegistryData registryData : list) {
 			params.put(ParamConstant.WEIGHT, registryData.getWeight());
-			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(registryData));
+			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(registryData), registryData);
 			consumerMap.put(consumer, sharedObject);
 			consumers.add(consumer);
 		}
-		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
-		Cluster<T> cluster = new FailoverCluster<T>(clazz, consumers, loadBalance);
+
+		cluster.setInterfaceClass(clazz);
+		cluster.setConsumers(consumers);
+		cluster.setLoadBalance(loadBalance);
+
 		return cluster;
 	}
 	
@@ -128,7 +127,7 @@ public class DefaultProtocol implements Protocol{
 		return server;
 	}
 	
-	private Client getClient(HostAndPort hap) {
+	public Client getClient(RegistryData hap) {
 		String serverHost = hap.getHost();
 		int port = hap.getPort();
 		InetSocketAddress remoteAddress = new InetSocketAddress(serverHost, port);
