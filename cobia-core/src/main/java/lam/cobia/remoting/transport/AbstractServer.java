@@ -39,7 +39,6 @@ public abstract class AbstractServer implements Server{
 			logger.info("server open on port " + port + " success.");
 		} catch(Exception e) {
 			logger.error("open server fail, port:" + port);
-			e.printStackTrace();
 			System.exit(0);
 		}
 	}

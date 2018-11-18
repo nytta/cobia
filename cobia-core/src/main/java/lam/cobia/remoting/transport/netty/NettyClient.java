@@ -16,6 +16,8 @@ import lam.cobia.remoting.Channel;
 import lam.cobia.remoting.codec.CobiaDecoder;
 import lam.cobia.remoting.codec.CobiaEncoder;
 import lam.cobia.remoting.transport.AbstractClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 * <p>
@@ -26,6 +28,8 @@ import lam.cobia.remoting.transport.AbstractClient;
 * @version 1.0
 */
 public class NettyClient extends AbstractClient{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
 	
 	private EventLoopGroup group;
 	
@@ -58,7 +62,7 @@ public class NettyClient extends AbstractClient{
 			// Wait until the connection is closed.
 			channel = future.channel();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("[onOpen] failed", e);
 			throw new CobiaException(e);
 		}
 	}
@@ -68,7 +72,7 @@ public class NettyClient extends AbstractClient{
 		try {
 			channel.closeFuture().sync();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			LOGGER.error("[onClose] failed", e);
 		} finally {
 			group.shutdownGracefully();
 		}

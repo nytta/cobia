@@ -19,6 +19,8 @@ import lam.cobia.remoting.ChannelHandler;
 import lam.cobia.remoting.codec.CobiaDecoder;
 import lam.cobia.remoting.codec.CobiaEncoder;
 import lam.cobia.remoting.transport.AbstractServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 * <p>
@@ -29,6 +31,8 @@ import lam.cobia.remoting.transport.AbstractServer;
 * @version 1.0
 */
 public class NettyServer extends AbstractServer{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(NettyServer.class);
 	
 	private EventLoopGroup bossGroup;
 	
@@ -68,7 +72,7 @@ public class NettyServer extends AbstractServer{
 			// Wait until the server socket is closed.
 			//channel.closeFuture().sync();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("[onOpen] failed", e);
 			throw new CobiaException(e);
 		}
 	}

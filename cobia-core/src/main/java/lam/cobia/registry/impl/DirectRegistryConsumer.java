@@ -9,6 +9,7 @@ import lam.cobia.core.util.ParamConstant;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.registry.AbstractRegistryConsumer;
 import lam.cobia.registry.RegistryConsumer;
+import lam.cobia.registry.RegistrySubcriber;
 import lam.cobia.spi.ServiceFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ public class DirectRegistryConsumer extends AbstractRegistryConsumer {
     }
 
     @Override
-    public <T> List<RegistryData> getProviders(Class<T> interfaceClass) {
+    public <T> List<RegistryData> getProviders(Class<T> interfaceClass, RegistrySubcriber registrySubcriber) {
         //get server info from tag <registry /> .
         final String addressKey = "address";
         if (!getParamMap().containsKey(addressKey)) {

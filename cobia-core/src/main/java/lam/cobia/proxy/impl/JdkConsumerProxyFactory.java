@@ -42,12 +42,12 @@ public class JdkConsumerProxyFactory extends AbstractConsumerProxyFactory {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             Invocation invocation = new DefaultInvocation()
-                    .setInterface(consumer.getKey())
+                    .setInterface(consumer.getInterface().getName())
                     .setMethod(method.getName())
                     .setParamenterTypes(method.getParameterTypes())
                     .setArguments(args);
             LOGGER.debug("interface:{}, method:{}, parameterTypes:{}, arguments:{}",
-                    consumer.getKey(), method.getName(), method.getParameterTypes(), args);
+                    consumer.getInterface().getName(), method.getName(), method.getParameterTypes(), args);
             Result result = consumer.invoke(invocation);
             if (result == null) {
                 throw new CobiaException("result == null");
