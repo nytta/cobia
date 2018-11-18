@@ -107,12 +107,13 @@ public abstract class AbstractCluster<T> implements Cluster<T>, RegistrySubcribe
                                                 + " in spi:" + lam.cobia.rpc.Protocol.class.getName() + " is not type of "
                                                 + DefaultProtocol.class.getName());
             }
+            final List<Consumer<T>> copyConsumers = this.consumers;
             DefaultProtocol defaultProtocol = (DefaultProtocol) protocol;
-            List<Consumer<T>> consumerNewList = new ArrayList<>(this.consumers.size());
+            List<Consumer<T>> consumerNewList = new ArrayList<>(copyConsumers.size());
             boolean consumerExists;
             for (RegistryData registryData : registryDatas) {
                 consumerExists = false;
-                Iterator<Consumer<T>> iterator = this.consumers.iterator();
+                Iterator<Consumer<T>> iterator = copyConsumers.iterator();
                 while (iterator.hasNext()) {
                     Consumer<T> consumer = iterator.next();
                     if (consumer.getRegistryData().getHost().equals(registryData.getHost())) {
@@ -138,10 +139,10 @@ public abstract class AbstractCluster<T> implements Cluster<T>, RegistrySubcribe
             }
 
             //close invalid provider
-            this.consumers.forEach((Consumer<T> consumer) -> {
+            copyConsumers.forEach((Consumer<T> consumer) -> {
                 try {
                     consumer.close();
-                    LOGGER.error("[reloadConsumers] close invalid provider:{} success.", GsonUtil.toJson(consumer.getRegistryData()));
+                    LOGGER.info("[reloadConsumers] close invalid provider:{} success.", GsonUtil.toJson(consumer.getRegistryData()));
                 } catch (Exception e) {
                     LOGGER.error("[reloadConsumers] close invalid provider:{} failed.", GsonUtil.toJson(consumer.getRegistryData()), e);
                 }
@@ -169,17 +170,13 @@ public abstract class AbstractCluster<T> implements Cluster<T>, RegistrySubcribe
                                                 + " in spi:" + lam.cobia.rpc.Protocol.class.getName() + " is not type of "
                                                 + DefaultProtocol.class.getName());
             }
-            DefaultProtocol defaultProtocol = (DefaultProtocol) protocol;
-            List<Consumer<T>> consumerNewList = new ArrayList<>(this.consumers.size());
-            boolean consumerExists = false;
-            Iterator<Consumer<T>> iterator = this.consumers.iterator();
+            final List<Consumer<T>> copyConsumers = this.consumers;
+            Iterator<Consumer<T>> iterator = copyConsumers.iterator();
             while (iterator.hasNext()) {
                 Consumer<T> consumer = iterator.next();
                 if (consumer.getRegistryData().getHost().equals(registryData.getHost())) {
-                    consumerExists = true;
-
                     iterator.remove();
-
+                    consumer.close();
                     LOGGER.info("[reloadConsumer] interface:{}, get old Consumer:{}", interfaceClass.getName(), consumer);
                     break;
                 }
@@ -188,8 +185,11 @@ public abstract class AbstractCluster<T> implements Cluster<T>, RegistrySubcribe
             //new provider
             Map<String, Object> params = new HashMap<String, Object>();
             params.put(ParamConstant.WEIGHT, registryData.getWeight());
+            DefaultProtocol defaultProtocol = (DefaultProtocol) protocol;
             Consumer<T> newConsumer = new DefaultConsumer<T>(interfaceClass, params, defaultProtocol.getClient(registryData), registryData);
-            this.consumers.add(newConsumer);
+            copyConsumers.add(newConsumer);
+
+            this.consumers = copyConsumers;
 
             LOGGER.info("[reloadConsumer] interface:{}, create new Consumer:{}", interfaceClass.getName(), newConsumer);
         }
