@@ -1,6 +1,11 @@
 package lam.cobia.core;
 
 import java.io.Serializable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -68,6 +73,25 @@ public class NotNegativeLong implements Serializable {
 
     public long get() {
         return value.get();
+    }
+
+    public static void main(String[] args) {
+        ExecutorService executorService = new ThreadPoolExecutor(
+                10,
+                10,
+                0,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingDeque<Runnable>(),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.AbortPolicy()
+                );
+        NotNegativeLong notNegativeLong = new NotNegativeLong();
+
+        for (int i = 0; i < 100; i++) {
+            executorService.execute(() -> {
+                System.out.println(notNegativeLong.incrementAndGet());
+            });
+        }
     }
 
 }
