@@ -1,6 +1,5 @@
 package lam.cobia.registry.impl;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +13,6 @@ import lam.cobia.registry.RegistrySubcriber;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.ZkConnection;
-import org.I0Itec.zkclient.exception.ZkMarshallingError;
-import org.I0Itec.zkclient.serialize.ZkSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +42,7 @@ public class ZookeeperRegistryConsumer extends AbstractRegistryConsumer {
             return ;
         }
         final int connectionTimeout = Integer.MAX_VALUE;
-        this.zkClient = new ZkClient(buildZkConnection(), connectionTimeout, buildZkSerializer());
+        this.zkClient = new ZkClient(buildZkConnection(), connectionTimeout, new ZookeeperDefaultSerializer());
         LOGGER.info("[initZkClient] zkClient");
     }
 
@@ -58,33 +55,6 @@ public class ZookeeperRegistryConsumer extends AbstractRegistryConsumer {
         ZkConnection zkConnection = new ZkConnection(address, sessionTimeout);
         LOGGER.info("[buildZkConnection] build ZkConnection address:" + address + ", sessionTimeout:" + sessionTimeout + " success.");
         return zkConnection;
-    }
-
-    private ZkSerializer buildZkSerializer() {
-        ZkSerializer zkSerializer = new ZkSerializer() {
-            String charsetName = "utf-8";
-            @Override
-            public byte[] serialize(Object data) throws ZkMarshallingError {
-                try {
-                    return ((String)data).getBytes(charsetName);
-                } catch (UnsupportedEncodingException e) {
-                    LOGGER.error("[buildZkSerializer] unsupport encoding " + charsetName, e);
-                    return null;
-                }
-            }
-
-            @Override
-            public Object deserialize(byte[] bytes) throws ZkMarshallingError {
-                try {
-                    return new String(bytes, charsetName);
-                } catch (UnsupportedEncodingException e) {
-                    LOGGER.error("[buildZkSerializer] unsupport encoding " + charsetName, e);
-                    return null;
-                }
-            }
-        };
-        LOGGER.info("[buildZkSerializer] build ZkSerializer success.");
-        return zkSerializer;
     }
 
     @Override

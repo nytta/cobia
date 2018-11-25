@@ -32,6 +32,7 @@ public abstract class AbstractProvider<T> implements Provider<T>{
 		String methodName = invocation.getMethod();
 		Class<?>[] parameterTypes = invocation.getParameterTypes();
 		Object[] arguments = invocation.getArguments();
+		//TODO report invokedCount by other provider wrapper alone, just like using provider chain.
 		//increment invoking count
 		invokeCount.incrementAndGet();
 

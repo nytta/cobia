@@ -12,11 +12,21 @@ public class RegistryData extends HostAndPort{
 
     private Integer weight = ParamConstant.WEIGHT_DEFAULT;
 
+    private Long invokedCount;
+
     public Integer getWeight() {
         return weight;
     }
 
     public void setWeight(Integer weight) {
         this.weight = weight;
+    }
+
+    public long getInvokedCount() {
+        return invokedCount;
+    }
+
+    public void setInvokedCount(long invokedCount) {
+        this.invokedCount = invokedCount;
     }
 }
