@@ -39,19 +39,20 @@ public abstract class AbstractCluster<T> implements Cluster<T>, RegistrySubcribe
 
     private LoadBalance loadBalance;
 
-    protected String name;
+    protected final String name;
 
     /**
      * should call setInterfaceClass, setConsumers, setLoadBalance method after AbstractCluster instance is created.
      */
-    public AbstractCluster() {
-
+    public AbstractCluster(String name) {
+        this.name = name;
     }
 
-    public AbstractCluster(Class<T> interfaceClass, List<Consumer<T>> consumers, LoadBalance loadBalance) {
+    public AbstractCluster(String name, Class<T> interfaceClass, List<Consumer<T>> consumers, LoadBalance loadBalance) {
         if (consumers == null || consumers.isEmpty()) {
             throw new IllegalStateException("List<Consumer<T> consumers is null or empty.");
         }
+        this.name = name;
         this.interfaceClass = interfaceClass;
         this.consumers = consumers;
         this.loadBalance = loadBalance;

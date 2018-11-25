@@ -26,12 +26,11 @@ public class FailoverCluster<T> extends AbstractCluster<T>{
     private int retryTime = 2;
 
     public FailoverCluster() {
-        super.name = "failover";
+        super("failover");
     }
 
     public FailoverCluster(Class<T> interfaceClass, List<Consumer<T>> consumers, LoadBalance loadBalance) {
-        super(interfaceClass, consumers, loadBalance);
-        super.name = "failover";
+        super("failover", interfaceClass, consumers, loadBalance);
     }
 
     @Override
