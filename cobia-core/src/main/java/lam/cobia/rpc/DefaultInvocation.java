@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import lam.cobia.core.exception.CobiaException;
+import lam.cobia.rpc.support.Invocation;
 
 /**
 * <p>

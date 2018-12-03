@@ -3,7 +3,7 @@ package lam.cobia.registry;
 import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.ParameterMap;
-import lam.cobia.rpc.Provider;
+import lam.cobia.rpc.support.Provider;
 import lam.cobia.spi.Spiable;
 
 import java.util.Map;

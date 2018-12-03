@@ -1,6 +1,4 @@
-package lam.cobia.rpc;
-
-import lam.cobia.core.util.Parameterable;
+package lam.cobia.rpc.support;
 
 import java.io.Closeable;
 

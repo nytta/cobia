@@ -1,6 +1,6 @@
 package lam.cobia.cluster;
 
-import lam.cobia.rpc.Consumer;
+import lam.cobia.rpc.support.Consumer;
 import lam.cobia.spi.Spiable;
 
 /**

@@ -1,4 +1,4 @@
-package lam.cobia.rpc;
+package lam.cobia.rpc.support;
 /**
 * <p>
 * result of rpc

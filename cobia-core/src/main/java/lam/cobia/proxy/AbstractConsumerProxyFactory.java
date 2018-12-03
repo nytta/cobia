@@ -1,6 +1,6 @@
 package lam.cobia.proxy;
 
-import lam.cobia.rpc.Consumer;
+import lam.cobia.rpc.support.Consumer;
 
 /**
  * @description: AbstractConsumerProxyFactory

@@ -26,6 +26,10 @@ import lam.cobia.remoting.ExchangeServer;
 import lam.cobia.remoting.HeaderExchangeServer;
 import lam.cobia.remoting.transport.netty.NettyClient;
 import lam.cobia.remoting.transport.netty.NettyServer;
+import lam.cobia.rpc.support.Consumer;
+import lam.cobia.rpc.support.Exporter;
+import lam.cobia.rpc.support.Protocol;
+import lam.cobia.rpc.support.Provider;
 import lam.cobia.spi.ServiceFactory;
 
 /**
@@ -36,7 +40,7 @@ import lam.cobia.spi.ServiceFactory;
 * @date 2017年12月18日
 * @version 1.0
 */
-public class DefaultProtocol implements Protocol{
+public class DefaultProtocol implements Protocol {
 
 	private final Object sharedObject;
 	
@@ -63,7 +67,7 @@ public class DefaultProtocol implements Protocol{
 	@Override
 	public <T> Exporter<T> export(Provider<T> provider, Map<String, Object> params) {
 
-	    DefaultExporter<T> exporter = new DefaultExporter<T>(provider, provider.getKey());
+	    DefaultExporter<T> exporter = new DefaultExporter<T>(provider);
 
 	    exporterMap.put(provider.getKey(), exporter);
 	    

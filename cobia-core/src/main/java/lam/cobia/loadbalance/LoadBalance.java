@@ -1,7 +1,7 @@
 package lam.cobia.loadbalance;
 
-import lam.cobia.rpc.Consumer;
-import lam.cobia.rpc.Invocation;
+import lam.cobia.rpc.support.Consumer;
+import lam.cobia.rpc.support.Invocation;
 import lam.cobia.spi.Spiable;
 
 import java.util.List;

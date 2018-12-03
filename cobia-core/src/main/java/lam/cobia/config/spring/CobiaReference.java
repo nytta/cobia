@@ -3,8 +3,8 @@ package lam.cobia.config.spring;
 import java.util.Map;
 
 import lam.cobia.proxy.ConsumerProxyFactory;
-import lam.cobia.rpc.Consumer;
-import lam.cobia.rpc.Protocol;
+import lam.cobia.rpc.support.Consumer;
+import lam.cobia.rpc.support.Protocol;
 import lam.cobia.spi.ServiceFactory;
 
 /**

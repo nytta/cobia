@@ -1,4 +1,4 @@
-package lam.cobia.rpc;
+package lam.cobia.rpc.support;
 
 import java.io.Closeable;
 import java.util.Map;

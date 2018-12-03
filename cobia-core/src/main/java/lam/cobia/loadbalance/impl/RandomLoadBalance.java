@@ -2,8 +2,8 @@ package lam.cobia.loadbalance.impl;
 
 import lam.cobia.core.util.ParamConstant;
 import lam.cobia.loadbalance.AbstractLoadBalance;
-import lam.cobia.rpc.Consumer;
-import lam.cobia.rpc.Invocation;
+import lam.cobia.rpc.support.Consumer;
+import lam.cobia.rpc.support.Invocation;
 
 import java.util.List;
 import java.util.Random;

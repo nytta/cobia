@@ -1,4 +1,8 @@
 package lam.cobia.rpc;
+
+import lam.cobia.rpc.support.Exporter;
+import lam.cobia.rpc.support.Provider;
+
 /**
 * <p>
 * default exporter
@@ -9,21 +13,17 @@ package lam.cobia.rpc;
 */
 public class DefaultExporter<T> implements Exporter<T> {
 
-	//private final Invoker<T> invoker;
 	private final Provider<T> provider;
-	
-	private final String key;
 	
 	private volatile boolean closed = false;
 	
-	public DefaultExporter(Provider<T> provider, String key) {
+	public DefaultExporter(Provider<T> provider) {
 		this.provider = provider;
-		this.key = key;
 	}
 	
 	@Override
 	public String getKey() {
-		return key;
+		return getProvider().getKey();
 	}
 	
 	@Override

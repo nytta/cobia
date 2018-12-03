@@ -1,6 +1,6 @@
 package lam.cobia.proxy;
 
-import lam.cobia.rpc.Provider;
+import lam.cobia.rpc.support.Provider;
 
 /**
  * @description: AbstractProviderProxyFactory

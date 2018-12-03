@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import lam.cobia.proxy.ProviderProxyFactory;
-import lam.cobia.rpc.Exporter;
-import lam.cobia.rpc.Protocol;
-import lam.cobia.rpc.Provider;
+import lam.cobia.rpc.support.Exporter;
+import lam.cobia.rpc.support.Protocol;
+import lam.cobia.rpc.support.Provider;
 import lam.cobia.spi.ServiceFactory;
 
 /**

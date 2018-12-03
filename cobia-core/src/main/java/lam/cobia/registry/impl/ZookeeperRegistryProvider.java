@@ -7,7 +7,7 @@ import lam.cobia.core.util.GsonUtil;
 import lam.cobia.core.util.ParamConstant;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.registry.AbstractRegistryProvider;
-import lam.cobia.rpc.Provider;
+import lam.cobia.rpc.support.Provider;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.ZkConnection;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;

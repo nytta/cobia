@@ -1,12 +1,10 @@
 package lam.cobia.registry.impl;
 
-import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.registry.AbstractRegistryProvider;
-import lam.cobia.registry.RegistryProvider;
-import lam.cobia.rpc.Provider;
-import lam.cobia.spi.ServiceFactory;
+import lam.cobia.rpc.support.Provider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
