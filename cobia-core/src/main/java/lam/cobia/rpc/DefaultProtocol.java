@@ -26,6 +26,7 @@ import lam.cobia.remoting.ExchangeServer;
 import lam.cobia.remoting.HeaderExchangeServer;
 import lam.cobia.remoting.transport.netty.NettyClient;
 import lam.cobia.remoting.transport.netty.NettyServer;
+import lam.cobia.rpc.chain.ProviderChainWrapper;
 import lam.cobia.rpc.support.Consumer;
 import lam.cobia.rpc.support.Exporter;
 import lam.cobia.rpc.support.Protocol;
@@ -66,8 +67,9 @@ public class DefaultProtocol implements Protocol {
 	
 	@Override
 	public <T> Exporter<T> export(Provider<T> provider, Map<String, Object> params) {
+		ProviderChainWrapper<T> providerChainWrapper = new CountingProvider<T>(provider);
 
-	    DefaultExporter<T> exporter = new DefaultExporter<T>(provider);
+	    DefaultExporter<T> exporter = new DefaultExporter<T>(providerChainWrapper);
 
 	    exporterMap.put(provider.getKey(), exporter);
 	    

@@ -34,13 +34,17 @@ public class ProviderChainWrapper<T> implements Provider<T> {
     @Override
     public Result invoke(Invocation invocation) {
         if (hasNext()) {
-            return this.next.invoke(provider, invocation);
+            return this.next().invoke(provider, invocation);
         }
         return this.provider.invoke(invocation);
     }
 
     public boolean hasNext() {
         return this.next != null;
+    }
+
+    public ProviderChain next() {
+        return this.next;
     }
 
     @Override
