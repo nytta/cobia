@@ -4,6 +4,7 @@ import lam.cobia.core.exception.CobiaException;
 import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.GsonUtil;
+import lam.cobia.core.util.NetUtil;
 import lam.cobia.core.util.ParamConstant;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.registry.AbstractRegistryProvider;
@@ -16,6 +17,7 @@ import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -127,5 +129,26 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
         } catch (Exception e) {
             LOGGER.error("[onProviderDataChanges] Provider:{}, RegistryData:{}", provider, registryData);
         }
+    }
+
+    @Override
+    public <T> RegistryData readRegistryData(Provider<T> provider) {
+        final String parentPath = String.format("%s/%s", ZOOKEEPER_ROOT_PATH, provider.getInterface().getName());
+        String path = null;
+        List<String> children = zkClient.getChildren(parentPath);
+
+        for (String child : children) {
+            int index = child.indexOf(':');
+            if (index != -1 && NetUtil.getLocalHost().equals(child.substring(0, index))) {
+                path = child;
+            }
+        }
+        RegistryData registryData = null;
+        if (path != null) {
+            String json = zkClient.readData(path);
+            registryData = GsonUtil.fromJson(json, RegistryData.class);
+        }
+        LOGGER.debug("[readRegistryData] provider:{}, path:{}, RegistryData:{}", provider, path, GsonUtil.toJson(registryData));
+        return registryData;
     }
 }

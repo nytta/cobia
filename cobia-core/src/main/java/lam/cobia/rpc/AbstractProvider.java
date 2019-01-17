@@ -1,6 +1,5 @@
 package lam.cobia.rpc;
 
-import lam.cobia.core.NotNegativeLong;
 import lam.cobia.rpc.support.Invocation;
 import lam.cobia.rpc.support.Provider;
 import lam.cobia.rpc.support.Result;
@@ -14,8 +13,6 @@ import lam.cobia.rpc.support.Result;
 * @versio 1.0
 */
 public abstract class AbstractProvider<T> implements Provider<T> {
-
-	private NotNegativeLong invokeCount = new NotNegativeLong(0);
 	
 	private T proxy;
 	
@@ -31,14 +28,8 @@ public abstract class AbstractProvider<T> implements Provider<T> {
 		String methodName = invocation.getMethod();
 		Class<?>[] parameterTypes = invocation.getParameterTypes();
 		Object[] arguments = invocation.getArguments();
-		//TODO report invokedCount by other provider wrapper alone, just like using provider chain.
-		//increment invoking count
-		invokeCount.incrementAndGet();
 
 		Object result = doInvoke(proxy, methodName, parameterTypes, arguments);
-
-		//descrement invokeing count
-		invokeCount.decrementAndGet();
 
 		return new DefaultResult().setValue(result);
 	}
@@ -59,4 +50,8 @@ public abstract class AbstractProvider<T> implements Provider<T> {
 	public void close() {
 	}
 
+	@Override
+	public String toString() {
+		return "AbstractProvider{class: " + clazz.getName() + "}";
+	}
 }

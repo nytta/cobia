@@ -28,6 +28,8 @@ public class CRegistryBean extends AbstractConfig
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CRegistryBean.class);
 
+    private static String REGISTRY_TYPE;
+
     private static ApplicationContext applicationContext;
 
     private static RegistryConsumer registryConsumer;
@@ -79,6 +81,7 @@ public class CRegistryBean extends AbstractConfig
     @Override
     public void afterPropertiesSet() throws Exception {
         super.putParamIntoMap();
+        CRegistryBean.REGISTRY_TYPE = getType();
         LOGGER.info("[afterPropertiesSet] " + this.getClass().getSimpleName() + ", put param int map:" + super.getParams());
     }
 
@@ -98,6 +101,10 @@ public class CRegistryBean extends AbstractConfig
             LOGGER.info("[onApplicationEvent] RegistryConsumer:{}", registryConsumer.getClass().getName());
             LOGGER.info("[onApplicationEvent] RegistryProvider:{}", registryProvider.getClass().getName());
         }
+    }
+
+    public static String getRegistryType() {
+        return CRegistryBean.REGISTRY_TYPE;
     }
 
     public static RegistryProvider getRegistryProvider() {

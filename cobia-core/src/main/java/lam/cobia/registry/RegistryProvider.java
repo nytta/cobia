@@ -21,4 +21,6 @@ public interface RegistryProvider extends ParameterMap {
 
     public <T> void onProviderDataChanges(Provider<T> provider, RegistryData registryData);
 
+    public <T> RegistryData readRegistryData(Provider<T> provider);
+
 }

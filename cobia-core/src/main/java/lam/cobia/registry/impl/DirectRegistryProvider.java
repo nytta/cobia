@@ -2,6 +2,7 @@ package lam.cobia.registry.impl;
 
 import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.model.RegistryData;
+import lam.cobia.core.util.GsonUtil;
 import lam.cobia.registry.AbstractRegistryProvider;
 import lam.cobia.rpc.support.Provider;
 
@@ -33,6 +34,12 @@ public class DirectRegistryProvider extends AbstractRegistryProvider {
 
     @Override
     public <T> void onProviderDataChanges(Provider<T> provider, RegistryData registryData) {
+        LOGGER.debug("[onProviderDataChanges] provider:{}, registryData:{}", provider, GsonUtil.toJson(registryData));
+    }
 
+    @Override
+    public <T> RegistryData readRegistryData(Provider<T> provider) {
+        LOGGER.debug("[readRegistryData] provider:{}, return null.", provider);
+        return null;
     }
 }

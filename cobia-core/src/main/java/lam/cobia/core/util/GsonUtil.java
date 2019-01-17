@@ -1,7 +1,6 @@
 package lam.cobia.core.util;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 /**
 * <p>
@@ -16,7 +15,6 @@ public class GsonUtil {
 	private static Gson gson = new Gson();
 	
 	public static String toJson(Object src) {
-		//return gson.toJson(src, new TypeToken<String>(){}.getType());
 		return gson.toJson(src);
 	}
 	
