@@ -43,25 +43,19 @@ import lam.cobia.spi.ServiceFactory;
 */
 public class DefaultProtocol implements Protocol {
 
-	private final Object sharedObject;
+	private final Object sharedObject = new Object();
 	
-	private ConcurrentMap<Consumer<?>, Object> consumerMap;
+	private final ConcurrentMap<Consumer<?>, Object> consumerMap = new ConcurrentHashMap<>();
 	
-	private ConcurrentMap<String, Exporter<?>> exporterMap;
+	private final ConcurrentMap<String, Exporter<?>> exporterMap = new ConcurrentHashMap<>();
 	
-	private ConcurrentMap<String, ExchangeServer> serverMap;
+	private final ConcurrentMap<String, ExchangeServer> serverMap = new ConcurrentHashMap<>();
 	
-	private ConcurrentMap<Integer, lam.cobia.remoting.transport.netty.NettyServer> nettyMap;
+	private final ConcurrentMap<Integer, lam.cobia.remoting.transport.netty.NettyServer> nettyMap = new ConcurrentHashMap<>();
 	
-	private ConcurrentMap<InetSocketAddress, lam.cobia.remoting.Client> clientsMap;
+	private final ConcurrentMap<InetSocketAddress, lam.cobia.remoting.Client> clientsMap = new ConcurrentHashMap<>();
 	
 	public DefaultProtocol() {
-		this.sharedObject = new Object();
-		this.consumerMap = new ConcurrentHashMap<Consumer<?>, Object>();
-		this.exporterMap = new ConcurrentHashMap<String, Exporter<?>>();
-		this.serverMap = new ConcurrentHashMap<String, ExchangeServer>();
-		this.nettyMap = new ConcurrentHashMap<Integer, lam.cobia.remoting.transport.netty.NettyServer>();
-		this.clientsMap = new ConcurrentHashMap<InetSocketAddress, lam.cobia.remoting.Client>();
 	}
 
 	
@@ -75,9 +69,8 @@ public class DefaultProtocol implements Protocol {
 	    
 	    openServer(provider);
 
-		String host = NetUtil.getLocalHost();
-		int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
-		HostAndPort hap = new HostAndPort().setHost(host).setPort(port);
+		final int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
+		HostAndPort hap = new HostAndPort().setHost(NetUtil.getLocalHost()).setPort(port);
 	    //do work: registry provider
 		CRegistryBean.getRegistryProvider().registry(provider, hap, params);
 	    

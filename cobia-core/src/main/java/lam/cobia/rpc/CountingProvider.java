@@ -35,8 +35,7 @@ public class CountingProvider<T> extends ProviderChainWrapper {
     final NotNegativeLong invokedCount = new NotNegativeLong(0);
 
     public CountingProvider(Provider<T> provider) {
-        super(provider, null);
-        start();
+        this(provider, null);
     }
 
     public CountingProvider(Provider<T> provider, ProviderChain next) {

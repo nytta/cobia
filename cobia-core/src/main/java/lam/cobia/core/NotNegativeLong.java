@@ -32,43 +32,33 @@ public class NotNegativeLong implements Serializable {
     }
 
     public long getAndIncrement() {
-        long oldValue = value.get();
-        long newValue = oldValue == Long.MAX_VALUE ? 0 : oldValue + 1;
-        while (!value.compareAndSet(oldValue, newValue)) {
-            oldValue = value.get();
-            newValue = oldValue == Long.MAX_VALUE ? 0 : oldValue + 1;
-        }
-        return oldValue;
+        long longs[] = compareAndAdd(Long.MAX_VALUE, 1);
+        return longs[0];
     }
 
     public long incrementAndGet() {
-        long oldValue = value.get();
-        long newValue = oldValue == Long.MAX_VALUE ? 0 : oldValue + 1;
-        while (!value.compareAndSet(oldValue, newValue)) {
-            oldValue = value.get();
-            newValue = oldValue == Long.MAX_VALUE ? 0 : oldValue + 1;
-        }
-        return newValue;
+        long longs[] = compareAndAdd(Long.MAX_VALUE, 1);
+        return longs[1];
     }
 
     public long getAndDecrement() {
-        long oldValue = value.get();
-        long newValue = oldValue == 0 ? 0 : oldValue - 1;
-        while (!value.compareAndSet(oldValue, newValue)) {
-            oldValue = value.get();
-            newValue = oldValue == 0 ? 0 : oldValue - 1;
-        }
-        return oldValue;
+        long longs[] = compareAndAdd(0, -1);
+        return longs[0];
     }
 
     public long decrementAndGet() {
-        long oldValue = value.get();
-        long newValue = oldValue == 0 ? 0 : oldValue - 1;
+        long longs[] = compareAndAdd(0, -1);
+        return longs[1];
+    }
+
+    private long[] compareAndAdd(long boundary, long addStep) {
+        long oldValue = get();
+        long newValue = oldValue == boundary ? boundary : oldValue + addStep;
         while (!value.compareAndSet(oldValue, newValue)) {
-            oldValue = value.get();
-            newValue = oldValue == 0 ? 0 : oldValue - 1;
+            oldValue = get();
+            newValue = oldValue == boundary ? boundary : oldValue + addStep;
         }
-        return newValue;
+        return new long[] {oldValue, newValue};
     }
 
     public long get() {
@@ -85,11 +75,11 @@ public class NotNegativeLong implements Serializable {
                 Executors.defaultThreadFactory(),
                 new ThreadPoolExecutor.AbortPolicy()
                 );
-        NotNegativeLong notNegativeLong = new NotNegativeLong();
+        NotNegativeLong notNegativeLong = new NotNegativeLong(10);
 
         for (int i = 0; i < 100; i++) {
             executorService.execute(() -> {
-                System.out.println(notNegativeLong.incrementAndGet());
+                System.out.println(notNegativeLong.getAndDecrement());
             });
         }
     }

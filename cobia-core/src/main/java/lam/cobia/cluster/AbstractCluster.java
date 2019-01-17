@@ -50,7 +50,7 @@ public abstract class AbstractCluster<T> implements Cluster<T>, RegistrySubcribe
 
     public AbstractCluster(String name, Class<T> interfaceClass, List<Consumer<T>> consumers, LoadBalance loadBalance) {
         if (consumers == null || consumers.isEmpty()) {
-            throw new IllegalStateException("List<Consumer<T> consumers is null or empty.");
+            throw new IllegalStateException("List<Consumer<T>> consumers is null or empty.");
         }
         this.name = name;
         this.interfaceClass = interfaceClass;
