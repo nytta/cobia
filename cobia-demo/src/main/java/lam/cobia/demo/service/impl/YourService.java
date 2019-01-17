@@ -1,5 +1,7 @@
-package lam.cobia.core.service;
+package lam.cobia.demo.service.impl;
 
+import lam.cobia.demo.service.IMyService;
+import lam.cobia.demo.service.IYourService;
 import lam.cobia.log.Console;
 
 /**
@@ -10,7 +12,7 @@ import lam.cobia.log.Console;
 * @date 2018年6月28日
 * @version 1.0
 */
-public class YourService implements IYourService{
+public class YourService implements IYourService {
 	
 	private IMyService myService;
 	

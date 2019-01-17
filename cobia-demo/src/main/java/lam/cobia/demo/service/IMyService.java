@@ -1,4 +1,4 @@
-package lam.cobia.core.service;
+package lam.cobia.demo.service;
 /**
 * <p>
 * TODO

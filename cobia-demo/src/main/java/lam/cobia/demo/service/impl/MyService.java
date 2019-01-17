@@ -1,5 +1,6 @@
-package lam.cobia.core.service;
+package lam.cobia.demo.service.impl;
 
+import lam.cobia.demo.service.IMyService;
 import lam.cobia.log.Console;
 
 /**

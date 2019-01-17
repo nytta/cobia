@@ -1,10 +1,10 @@
-package lam.cobia.core;
+package lam.cobia.demo.main;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import lam.cobia.core.constant.Constant;
-import lam.cobia.core.service.IMyService;
-import lam.cobia.core.service.IYourService;
+import lam.cobia.demo.service.IMyService;
+import lam.cobia.demo.service.IYourService;
 
 /**
 * <p>

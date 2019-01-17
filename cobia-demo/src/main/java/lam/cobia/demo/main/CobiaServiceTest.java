@@ -1,10 +1,10 @@
-package lam.cobia.core;
+package lam.cobia.demo.main;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import lam.cobia.core.constant.Constant;
-import lam.cobia.core.service.IMyService;
-import lam.cobia.core.service.IYourService;
+import lam.cobia.demo.service.IMyService;
+import lam.cobia.demo.service.IYourService;
 
 /**
 * <p>
@@ -26,13 +26,13 @@ public class CobiaServiceTest {
 			IMyService myService = context.getBean("myService", IMyService.class);
 			System.out.println(myService);
 			
-			Object object1 = context.getBean("lam.cobia.core.service.IMyService");
+			Object object1 = context.getBean("lam.cobia.demo.service.IMyService");
 			System.out.println(System.identityHashCode(object1));
 			
 			IYourService yourService = context.getBean("yourService", IYourService.class);
 			System.out.println(yourService);
 			
-			Object object2 = context.getBean("lam.cobia.core.service.IYourService");
+			Object object2 = context.getBean("lam.cobia.demo.service.IYourService");
 			System.out.println(object2);
 			
 			Thread.sleep(5000L);
