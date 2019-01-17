@@ -10,6 +10,7 @@
   <version>0.0.6-SNAPSHOT</version>
   <modules>
     <module>cobia-core</module>
+      <module>cobia-demo</module>
   </modules>
 
   <name>lam-cobia</name>
