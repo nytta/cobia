@@ -76,13 +76,13 @@ public class ZookeeperRegistryConsumer extends AbstractRegistryConsumer {
 
         //subscribes provider-list changes of interface provider
         zkClient.subscribeChildChanges(interfacePath, (String parentPath, List<String> currentChilds) -> {
-            LOGGER.info("[subscribeChildChanges] path:{}, current children:{}", parentPath, currentChilds);
+            LOGGER.debug("[subscribeChildChanges] path:{}, current children:{}", parentPath, currentChilds);
             List<RegistryData> registryDatas = new ArrayList<>();
             currentChilds.forEach((String child) -> {
                 String childPath = parentPath + "/" + child;
                 String childData = zkClient.readData(childPath);
 
-                LOGGER.info("[subscribeChildChanges] path:{}, data:{}", childPath, childData);
+                LOGGER.debug("[subscribeChildChanges] path:{}, data:{}", childPath, childData);
 
                 RegistryData registryData = GsonUtil.fromJson(childData, RegistryData.class);
                 registryDatas.add(registryData);
@@ -98,14 +98,19 @@ public class ZookeeperRegistryConsumer extends AbstractRegistryConsumer {
 
             zkClient.subscribeDataChanges(interfacePath + "/" + address, new IZkDataListener() {
                 @Override
-                public void handleDataChange(String s, Object o) throws Exception {
-                    LOGGER.info("[subscribeDataChanges] {}:{}", s, o);
-                    //TODO reload provider config with registrySubcribe.onProviderChanges method.
+                public void handleDataChange(String path, Object o) throws Exception {
+                    if (o instanceof String) {
+                        RegistryData newValue = GsonUtil.fromJson((String)o, RegistryData.class);
+                        registrySubcriber.onProviderChanges(interfaceClass, newValue);
+                        LOGGER.debug("[subscribeDataChanges] handleDataChange path: {}, data: {}", path, o);
+                    } else {
+                        LOGGER.warn("[subscribeDataChanges] handleDataChange path: {}, data: {}, but data is not {}.", path, o, String.class.getName());
+                    }
                 }
 
                 @Override
-                public void handleDataDeleted(String s) throws Exception {
-
+                public void handleDataDeleted(String path) throws Exception {
+                    LOGGER.debug("[subscribeDataChanges] handleDataDeleted path:{}", path);
                 }
             });
         }

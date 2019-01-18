@@ -93,7 +93,7 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
         registryData.setPort(hap.getPort());
         registryData.setWeight(weight);
 
-        Object data = GsonUtil.toJson(registryData);
+        Object data = GsonUtil.toNotNullJson(registryData);
         boolean nodeExists = false;
         try {
             path = zkClient.create(path, data, CreateMode.EPHEMERAL);
@@ -121,7 +121,7 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
     public <T> void onProviderDataChanges(Provider<T> provider, RegistryData registryData) {
         final String path = String.format("%s/%s/%s:%d",
                 ZOOKEEPER_ROOT_PATH, provider.getInterface().getName(), registryData.getHost(), registryData.getPort());
-        String data = GsonUtil.toJson(registryData);
+        String data = GsonUtil.toNotNullJson(registryData);
         try {
             zkClient.writeData(path, data);
             LOGGER.debug("[onProviderDataChanges] interface:{}, RegistryData:{}, config of provider update to registry center success."

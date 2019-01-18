@@ -1,6 +1,6 @@
 package lam.cobia.core.util;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
 * <p>
@@ -12,14 +12,20 @@ import com.google.gson.Gson;
 */
 public class GsonUtil {
 
-	private static Gson gson = new Gson();
+	private static GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
+
+	private static GsonBuilder notNullGsonBuilder = new GsonBuilder();
 	
 	public static String toJson(Object src) {
-		return gson.toJson(src);
+		return gsonBuilder.create().toJson(src);
+	}
+
+	public static String toNotNullJson(Object src) {
+		return notNullGsonBuilder.create().toJson(src);
 	}
 	
 	public static <T> T fromJson(String json, Class<T> classOfT) {
-		return gson.fromJson(json, classOfT);
+		return gsonBuilder.create().fromJson(json, classOfT);
 	}
 	
 }
