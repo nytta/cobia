@@ -82,6 +82,7 @@ public class DefaultProtocol implements Protocol {
 	@Override
 	public <T> Consumer<T> refer(Class<T> clazz, Map<String, Object> params) {
 
+		// TODO take LoadBalance according to the config, not takeDefaultInstance(..)
 		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
 		AbstractCluster<T> cluster = new FailoverCluster<T>();
 

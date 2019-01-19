@@ -2,6 +2,7 @@
 
 ## TODO
 
+- write document about attribute balanced of tag \<service/>
 - develop cluster consumer: invoke the least active service.
 
 ## cobia tag

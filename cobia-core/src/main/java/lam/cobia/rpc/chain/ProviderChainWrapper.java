@@ -1,7 +1,9 @@
 package lam.cobia.rpc.chain;
 
 import java.util.List;
+import java.util.Objects;
 
+import lam.cobia.config.spring.CServiceBean;
 import lam.cobia.rpc.support.Invocation;
 import lam.cobia.rpc.support.Provider;
 import lam.cobia.rpc.support.ProviderChain;
@@ -17,6 +19,7 @@ public class ProviderChainWrapper<T> implements Provider<T> {
     protected final ProviderChain next;
 
     public ProviderChainWrapper(Provider<T> provider, ProviderChain next) {
+        Objects.requireNonNull(provider, "arguments provider is null");
         this.provider = provider;
         this.next     = next;
     }
@@ -29,6 +32,11 @@ public class ProviderChainWrapper<T> implements Provider<T> {
     @Override
     public Class<T> getInterface() {
         return this.provider.getInterface();
+    }
+
+    @Override
+    public CServiceBean<T> getServiceBean() {
+        return this.provider.getServiceBean();
     }
 
     @Override

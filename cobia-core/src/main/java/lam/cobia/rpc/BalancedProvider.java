@@ -56,7 +56,6 @@ public class BalancedProvider<T> extends ProviderChainWrapper implements Disposa
                     final RegistryProvider registryProvider = ServiceFactory.takeInstance(CRegistryBean.getRegistryType(), RegistryProvider.class);
                     RegistryData registryData = registryProvider.readRegistryData(provider);
                     if (registryData != null) {
-                        registryData.setServiceBalanced();
                         registryData.setInvokedCount(invokingCount);
                         registryProvider.onProviderDataChanges(provider, registryData);
                     }
