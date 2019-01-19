@@ -35,6 +35,11 @@
 							<xsd:documentation><![CDATA[ invoke weight of service. ]]></xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
+					<xsd:attribute name="balanced" type="xsd:boolean" use="optional">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[ balance service provider list, default: false. ]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>
