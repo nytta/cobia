@@ -32,6 +32,7 @@ import lam.cobia.rpc.support.Exporter;
 import lam.cobia.rpc.support.Protocol;
 import lam.cobia.rpc.support.Provider;
 import lam.cobia.spi.ServiceFactory;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
 * <p>
@@ -58,10 +59,12 @@ public class DefaultProtocol implements Protocol {
 	public DefaultProtocol() {
 	}
 
-	
+	// TODO parameter:Map<String, Object> chaneg to CServiceBean would be better
 	@Override
 	public <T> Exporter<T> export(Provider<T> provider, Map<String, Object> params) {
-		ProviderChainWrapper<T> providerChainWrapper = new CountingProvider<T>(provider);
+		Object balancedObj = params.get("balanced");
+		boolean balanced  = balancedObj == null ? false : BooleanUtils.toBoolean(balancedObj.toString());
+		ProviderChainWrapper<T> providerChainWrapper = balanced ? new BalancedProvider<T>(provider) : new ProviderChainWrapper<>(provider, null);
 
 	    DefaultExporter<T> exporter = new DefaultExporter<T>(providerChainWrapper);
 

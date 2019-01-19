@@ -56,6 +56,12 @@ public class CServiceBean<T> extends AbstractConfig
 
 	@ParamAnnotation
 	private String registry = "zookeeper"; //default registry:zookeeper
+
+	/**
+	 * to determine whether balance service provider list.
+	 */
+	@ParamAnnotation
+	private Boolean balanced = Boolean.FALSE;
 	
 	//=============
 	
@@ -155,6 +161,14 @@ public class CServiceBean<T> extends AbstractConfig
 
 	public void setRegistry(String registry) {
 		this.registry = registry;
+	}
+
+	public Boolean getBalanced() {
+		return balanced;
+	}
+
+	public void setBalanced(Boolean balanced) {
+		this.balanced = balanced;
 	}
 
 	@Override

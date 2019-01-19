@@ -1,5 +1,8 @@
 package lam.cobia.config.spring;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -17,6 +20,8 @@ import java.util.Map;
 public class AbstractConfig implements Serializable{
 
 	private static final long serialVersionUID = -7216622573995725768L;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractConfig.class);
 
 	protected Map<String, Object> params = new HashMap<String, Object>();
 
@@ -37,7 +42,7 @@ public class AbstractConfig implements Serializable{
 						params.put(field.getName(), value);
 					}
 				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+					LOGGER.error("[putParamIntoMap] can access to field", e);
 				}
 			}
 		}
