@@ -96,7 +96,7 @@ public class CServiceBean<T> extends AbstractConfig
 		LOGGER.info(event.getClass().getName());
 		if (ContextRefreshedEvent.class.getName().equals(event.getClass().getName())) {
 			//do export bean
-			ServiceFactory.takeDefaultInstance(Service.class).export(getRef(), (Class<T>) interfaceClass, super.getParams());
+			ServiceFactory.takeDefaultInstance(Service.class).export(getRef(), (Class<T>) interfaceClass, this);
 		}
 	}
 	

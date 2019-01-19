@@ -9,7 +9,7 @@
 	<cobia:registry type="direct" />
 
 	<bean id="myService" class="lam.cobia.demo.service.impl.MyService"></bean>
-	<cobia:service interface="lam.cobia.demo.service.IMyService" ref="myService" weight="1"></cobia:service>
+	<cobia:service interface="lam.cobia.demo.service.IMyService" ref="myService" weight="1" balanced="true"></cobia:service>
 	<!-- 
 	<cobia:service interface="lam.cobia.core.service.IMyService" ref="myService"></cobia:service>
 	-->

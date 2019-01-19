@@ -25,12 +25,11 @@ public class CobiaService implements Service{
 	private ProviderProxyFactory providerProxyFactory = ServiceFactory.takeDefaultInstance(ProviderProxyFactory.class);
 	
 	private final List<Exporter<?>> exporters = new ArrayList<Exporter<?>>();
-	
+
 	@Override
-	public <T> void export(T ref, Class<T> clazz, Map<String, Object> params) {
-		Provider<T> provider = providerProxyFactory.getProvider(ref, clazz);
-		Exporter<T> exporter = protocol.export(provider, params);
+	public <T> void export(T ref, Class<T> clazz, CServiceBean<T> serviceBean) {
+		Provider<T> provider = providerProxyFactory.getProvider(ref, clazz, serviceBean);
+		Exporter<T> exporter = protocol.export(provider, serviceBean);
 		exporters.add(exporter);
 	}
-	
 }

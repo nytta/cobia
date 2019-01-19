@@ -25,7 +25,7 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * @author: linanmiao
  */
-public class BalancedProvider<T> extends ProviderChainWrapper implements InitializingBean, DisposableBean {
+public class BalancedProvider<T> extends ProviderChainWrapper implements DisposableBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BalancedProvider.class);
 
@@ -47,15 +47,16 @@ public class BalancedProvider<T> extends ProviderChainWrapper implements Initial
 
     public BalancedProvider(Provider<T> provider, ProviderChain next) {
         super(provider, next);
+        start();
     }
 
-    @Override
-    public void afterPropertiesSet() {
+    public void start() {
         scheduledThreadPoolExecutor.scheduleAtFixedRate(() -> {
                     final long invokingCount = invokedCount.get();
                     final RegistryProvider registryProvider = ServiceFactory.takeInstance(CRegistryBean.getRegistryType(), RegistryProvider.class);
                     RegistryData registryData = registryProvider.readRegistryData(provider);
                     if (registryData != null) {
+                        registryData.setServiceBalanced();
                         registryData.setInvokedCount(invokingCount);
                         registryProvider.onProviderDataChanges(provider, registryData);
                     }

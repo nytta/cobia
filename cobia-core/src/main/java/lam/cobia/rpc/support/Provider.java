@@ -1,5 +1,7 @@
 package lam.cobia.rpc.support;
 
+import lam.cobia.config.spring.CServiceBean;
+
 import java.io.Closeable;
 
 /**
@@ -17,6 +19,8 @@ public interface Provider<T> extends Closeable {
 	public Class<T> getInterface();
 	
 	public Result invoke(Invocation invocation);
+
+	public CServiceBean<T> getServiceBean();
 	
 	public void close();
 

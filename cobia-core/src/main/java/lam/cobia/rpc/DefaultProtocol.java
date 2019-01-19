@@ -2,6 +2,7 @@ package lam.cobia.rpc;
 
 import lam.cobia.cluster.AbstractCluster;
 import lam.cobia.config.spring.CRegistryBean;
+import lam.cobia.config.spring.CServiceBean;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.NetUtil;
 import lam.cobia.core.util.ParamConstant;
@@ -59,11 +60,9 @@ public class DefaultProtocol implements Protocol {
 	public DefaultProtocol() {
 	}
 
-	// TODO parameter:Map<String, Object> chaneg to CServiceBean would be better
 	@Override
-	public <T> Exporter<T> export(Provider<T> provider, Map<String, Object> params) {
-		Object balancedObj = params.get("balanced");
-		boolean balanced  = balancedObj == null ? false : BooleanUtils.toBoolean(balancedObj.toString());
+	public <T> Exporter<T> export(Provider<T> provider, CServiceBean<T> serviceBean) {
+		boolean balanced  = BooleanUtils.toBooleanDefaultIfNull(serviceBean.getBalanced(), false);
 		ProviderChainWrapper<T> providerChainWrapper = balanced ? new BalancedProvider<T>(provider) : new ProviderChainWrapper<>(provider, null);
 
 	    DefaultExporter<T> exporter = new DefaultExporter<T>(providerChainWrapper);
@@ -75,7 +74,7 @@ public class DefaultProtocol implements Protocol {
 		final int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
 		HostAndPort hap = new HostAndPort().setHost(NetUtil.getLocalHost()).setPort(port);
 	    //do work: registry provider
-		CRegistryBean.getRegistryProvider().registry(provider, hap, params);
+		CRegistryBean.getRegistryProvider().registry(provider, hap, serviceBean.getParams());
 	    
 		return exporter;
 	}

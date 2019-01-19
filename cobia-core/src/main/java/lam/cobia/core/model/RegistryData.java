@@ -14,6 +14,8 @@ public class RegistryData extends HostAndPort{
 
     private Long invokedCount;
 
+    private Boolean serviceBalanced;
+
     public Integer getWeight() {
         return weight;
     }
@@ -28,5 +30,13 @@ public class RegistryData extends HostAndPort{
 
     public void setInvokedCount(long invokedCount) {
         this.invokedCount = invokedCount;
+    }
+
+    public Boolean getServiceBalanced() {
+        return serviceBalanced;
+    }
+
+    public void setServiceBalanced(Boolean serviceBalanced) {
+        this.serviceBalanced = serviceBalanced;
     }
 }

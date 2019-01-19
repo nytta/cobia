@@ -52,7 +52,7 @@ public class AbstractConfig implements Serializable{
 		this.params.clear();
 	}
 
-	protected Map<String, Object> getParams() {
+	public Map<String, Object> getParams() {
 		return this.params;
 	}
 
