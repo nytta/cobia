@@ -1,6 +1,7 @@
 package lam.cobia.rpc;
 
 import lam.cobia.cluster.AbstractCluster;
+import lam.cobia.config.spring.CRefrenceBean;
 import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.config.spring.CServiceBean;
 import lam.cobia.core.model.RegistryData;
@@ -80,7 +81,7 @@ public class DefaultProtocol implements Protocol {
 	}
 
 	@Override
-	public <T> Consumer<T> refer(Class<T> clazz, Map<String, Object> params) {
+	public <T> Consumer<T> refer(Class<T> clazz, CRefrenceBean<T> refrenceBean) {
 
 		// TODO take LoadBalance according to the config, not takeDefaultInstance(..)
 		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
@@ -91,8 +92,8 @@ public class DefaultProtocol implements Protocol {
 
 		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
 		for (RegistryData registryData : list) {
-			params.put(ParamConstant.WEIGHT, registryData.getWeight());
-			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(registryData), registryData);
+			refrenceBean.getParams().put(ParamConstant.WEIGHT, registryData.getWeight());
+			Consumer<T> consumer = new DefaultConsumer<T>(clazz, refrenceBean.getParams(), getClient(registryData), registryData);
 			consumerMap.put(consumer, sharedObject);
 			consumers.add(consumer);
 		}
