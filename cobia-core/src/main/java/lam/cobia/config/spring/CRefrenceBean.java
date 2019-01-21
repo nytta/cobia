@@ -4,6 +4,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import lam.cobia.core.util.GsonUtil;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -47,6 +49,9 @@ public class CRefrenceBean<T> extends AbstractConfig
 
 	@ParamAnnotation
 	private String serviceServer; //This field must be initialzed, when value of field `registry` is 'direct'.
+
+	@ParamAnnotation
+	private String loadbalance = "random";
 	
 	private final AtomicBoolean refInited = new AtomicBoolean(false);
 	
@@ -57,6 +62,9 @@ public class CRefrenceBean<T> extends AbstractConfig
 	//The method of implementing interface org.springframework.beans.factory.InitializingBean
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		if (StringUtils.isBlank(getLoadbalance())) {
+			setLoadbalance("random");
+		}
 		super.putParamIntoMap();
 		LOGGER.info("[afterPropertiesSet] " + this.getClass().getSimpleName() + ", put param int map:" + super.getParams());
 	}
@@ -122,7 +130,7 @@ public class CRefrenceBean<T> extends AbstractConfig
 		Objects.requireNonNull(interfaceClass, "interfaceClass is null");
 		boolean oldValue = refInited.get();
 		if (!oldValue && refInited.compareAndSet(oldValue, true)) {
-			ref = (T) ServiceFactory.takeDefaultInstance(Reference.class).refer(interfaceClass, params);
+			ref = ServiceFactory.takeDefaultInstance(Reference.class).refer((Class<T>)interfaceClass, this);
 		}
 		return ref;
 	}
@@ -141,5 +149,13 @@ public class CRefrenceBean<T> extends AbstractConfig
 
 	public void setServiceServer(String serviceServer) {
 		this.serviceServer = serviceServer;
+	}
+
+	public String getLoadbalance() {
+		return loadbalance;
+	}
+
+	public void setLoadbalance(String loadbalance) {
+		this.loadbalance = loadbalance;
 	}
 }

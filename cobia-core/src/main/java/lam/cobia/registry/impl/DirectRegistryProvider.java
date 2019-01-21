@@ -1,11 +1,11 @@
 package lam.cobia.registry.impl;
 
-import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.model.HostAndPort;
+import lam.cobia.core.model.RegistryData;
+import lam.cobia.core.util.GsonUtil;
 import lam.cobia.registry.AbstractRegistryProvider;
-import lam.cobia.registry.RegistryProvider;
-import lam.cobia.rpc.Provider;
-import lam.cobia.spi.ServiceFactory;
+import lam.cobia.rpc.support.Provider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,5 +30,16 @@ public class DirectRegistryProvider extends AbstractRegistryProvider {
         LOGGER.info("[registry] provider[key:{}, interface:{}], registry host and port:[{}:{}]",
                 provider.getKey(), provider.getInterface().getName(), hap.getHost(), hap.getPort());
         return true;
+    }
+
+    @Override
+    public <T> void onProviderDataChanges(Provider<T> provider, RegistryData registryData) {
+        LOGGER.debug("[onProviderDataChanges] provider:{}, registryData:{}", provider, GsonUtil.toJson(registryData));
+    }
+
+    @Override
+    public <T> RegistryData readRegistryData(Provider<T> provider) {
+        LOGGER.debug("[readRegistryData] provider:{}, return null.", provider);
+        return null;
     }
 }

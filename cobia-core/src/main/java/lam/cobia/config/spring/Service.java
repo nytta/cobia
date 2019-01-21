@@ -14,7 +14,7 @@ import java.util.Map;
 */
 @Spiable("cobia")
 public interface Service {
-	
-	public <T> void export(T ref, Class<T> clazz, Map<String, Object> params);
+
+	public <T> void export(T ref, Class<T> clazz, CServiceBean<T> serviceBean);
 
 }

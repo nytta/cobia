@@ -1,6 +1,11 @@
 package lam.cobia.core;
 
 import java.io.Serializable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -20,37 +25,63 @@ public class NotNegativeLong implements Serializable {
     }
 
     public NotNegativeLong(long initialValue) {
-        checkValue(initialValue, 0);
+        if (initialValue < 0) {
+            throw new IllegalArgumentException("initialValue(" + initialValue + ") < 0");
+        }
         value = new AtomicLong(initialValue);
     }
 
-    private void checkValue(long value, long leastValue) {
-        if (value < leastValue) {
-            throw new IllegalStateException(value + " < " + leastValue);
-        }
-    }
-
     public long getAndIncrement() {
-        return value.getAndIncrement();
+        long longs[] = compareAndAdd(Long.MAX_VALUE, 1);
+        return longs[0];
     }
 
     public long incrementAndGet() {
-        return value.incrementAndGet();
+        long longs[] = compareAndAdd(Long.MAX_VALUE, 1);
+        return longs[1];
     }
 
     public long getAndDecrement() {
-        long oldValue = value.getAndDecrement();
-        checkValue(oldValue, 1);
-        return oldValue;
+        long longs[] = compareAndAdd(0, -1);
+        return longs[0];
     }
 
     public long decrementAndGet() {
-        long newValue = value.decrementAndGet();
-        checkValue(newValue, 0);
-        return newValue;
+        long longs[] = compareAndAdd(0, -1);
+        return longs[1];
+    }
+
+    private long[] compareAndAdd(long boundary, long addStep) {
+        long oldValue = get();
+        long newValue = oldValue == boundary ? boundary : oldValue + addStep;
+        while (!value.compareAndSet(oldValue, newValue)) {
+            oldValue = get();
+            newValue = oldValue == boundary ? boundary : oldValue + addStep;
+        }
+        return new long[] {oldValue, newValue};
     }
 
     public long get() {
         return value.get();
     }
+
+    public static void main(String[] args) {
+        ExecutorService executorService = new ThreadPoolExecutor(
+                10,
+                10,
+                0,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingDeque<Runnable>(),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.AbortPolicy()
+                );
+        NotNegativeLong notNegativeLong = new NotNegativeLong(10);
+
+        for (int i = 0; i < 100; i++) {
+            executorService.execute(() -> {
+                System.out.println(notNegativeLong.getAndDecrement());
+            });
+        }
+    }
+
 }

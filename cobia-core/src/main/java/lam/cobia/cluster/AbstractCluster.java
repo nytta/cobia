@@ -9,12 +9,12 @@ import lam.cobia.core.util.GsonUtil;
 import lam.cobia.core.util.ParamConstant;
 import lam.cobia.loadbalance.LoadBalance;
 import lam.cobia.registry.RegistrySubcriber;
-import lam.cobia.rpc.Consumer;
+import lam.cobia.rpc.support.Consumer;
 import lam.cobia.rpc.DefaultConsumer;
 import lam.cobia.rpc.DefaultProtocol;
-import lam.cobia.rpc.Invocation;
-import lam.cobia.rpc.Protocol;
-import lam.cobia.rpc.Result;
+import lam.cobia.rpc.support.Invocation;
+import lam.cobia.rpc.support.Protocol;
+import lam.cobia.rpc.support.Result;
 import lam.cobia.spi.ServiceFactory;
 
 import java.util.ArrayList;
@@ -39,19 +39,20 @@ public abstract class AbstractCluster<T> implements Cluster<T>, RegistrySubcribe
 
     private LoadBalance loadBalance;
 
-    protected String name;
+    protected final String name;
 
     /**
      * should call setInterfaceClass, setConsumers, setLoadBalance method after AbstractCluster instance is created.
      */
-    public AbstractCluster() {
-
+    public AbstractCluster(String name) {
+        this.name = name;
     }
 
-    public AbstractCluster(Class<T> interfaceClass, List<Consumer<T>> consumers, LoadBalance loadBalance) {
+    public AbstractCluster(String name, Class<T> interfaceClass, List<Consumer<T>> consumers, LoadBalance loadBalance) {
         if (consumers == null || consumers.isEmpty()) {
-            throw new IllegalStateException("List<Consumer<T> consumers is null or empty.");
+            throw new IllegalStateException("List<Consumer<T>> consumers is null or empty.");
         }
+        this.name = name;
         this.interfaceClass = interfaceClass;
         this.consumers = consumers;
         this.loadBalance = loadBalance;
@@ -98,13 +99,13 @@ public abstract class AbstractCluster<T> implements Cluster<T>, RegistrySubcribe
         LOGGER.info("[reloadConsumers] interface:{}, registryDatas:{}", interfaceName, registryDatas);
         synchronized (this) {
             final String spiName = "default";
-            Protocol protocol = ServiceFactory.takeInstance(spiName, lam.cobia.rpc.Protocol.class);
+            Protocol protocol = ServiceFactory.takeInstance(spiName, Protocol.class);
             if (protocol == null) {
-                throw new IllegalStateException("value of key:" + spiName + " in spi:" + lam.cobia.rpc.Protocol.class.getName() + " is null");
+                throw new IllegalStateException("value of key:" + spiName + " in spi:" + Protocol.class.getName() + " is null");
             }
             if (!(protocol instanceof DefaultProtocol)) {
                 throw new IllegalStateException("value type: " + protocol + " of key:" + spiName
-                                                + " in spi:" + lam.cobia.rpc.Protocol.class.getName() + " is not type of "
+                                                + " in spi:" + Protocol.class.getName() + " is not type of "
                                                 + DefaultProtocol.class.getName());
             }
             final List<Consumer<T>> copyConsumers = this.consumers;
@@ -161,13 +162,13 @@ public abstract class AbstractCluster<T> implements Cluster<T>, RegistrySubcribe
         LOGGER.info("[reloadConsumer] reload interface:{}, consumer:{}", interfaceName, registryData);
         synchronized (this) {
             final String spiName = "default";
-            Protocol protocol = ServiceFactory.takeInstance(spiName, lam.cobia.rpc.Protocol.class);
+            Protocol protocol = ServiceFactory.takeInstance(spiName, Protocol.class);
             if (protocol == null) {
-                throw new IllegalStateException("value of key:" + spiName + " in spi:" + lam.cobia.rpc.Protocol.class.getName() + " is null");
+                throw new IllegalStateException("value of key:" + spiName + " in spi:" + Protocol.class.getName() + " is null");
             }
             if (!(protocol instanceof DefaultProtocol)) {
                 throw new IllegalStateException("value type: " + protocol + " of key:" + spiName
-                                                + " in spi:" + lam.cobia.rpc.Protocol.class.getName() + " is not type of "
+                                                + " in spi:" + Protocol.class.getName() + " is not type of "
                                                 + DefaultProtocol.class.getName());
             }
             final List<Consumer<T>> copyConsumers = this.consumers;

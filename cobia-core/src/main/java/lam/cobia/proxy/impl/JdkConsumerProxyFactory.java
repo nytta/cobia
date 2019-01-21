@@ -2,11 +2,10 @@ package lam.cobia.proxy.impl;
 
 import lam.cobia.core.exception.CobiaException;
 import lam.cobia.proxy.AbstractConsumerProxyFactory;
-import lam.cobia.proxy.ConsumerProxyFactory;
-import lam.cobia.rpc.Consumer;
+import lam.cobia.rpc.support.Consumer;
 import lam.cobia.rpc.DefaultInvocation;
-import lam.cobia.rpc.Invocation;
-import lam.cobia.rpc.Result;
+import lam.cobia.rpc.support.Invocation;
+import lam.cobia.rpc.support.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

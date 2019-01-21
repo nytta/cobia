@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:cobia="http://code.lam.com/schema/cobia"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.lam.com/schema/cobia http://code.lam.com/schema/cobia/cobia.xsd">
+
+	<!--<cobia:registry type="zookeeper" address="192.168.20.112:2181"/>-->
+	<cobia:registry type="direct" />
+
+	<bean id="myService" class="lam.cobia.demo.service.impl.MyService"></bean>
+	<cobia:service interface="lam.cobia.demo.service.IMyService" ref="myService" weight="1" balanced="true"></cobia:service>
+	<!-- 
+	<cobia:service interface="lam.cobia.core.service.IMyService" ref="myService"></cobia:service>
+	-->
+	<!--
+	-->
+	<bean id="yourService" class="lam.cobia.demo.service.impl.YourService"></bean>
+	<cobia:service interface="lam.cobia.demo.service.IYourService" ref="yourService" weight="1"></cobia:service>
+</beans>

@@ -1,16 +1,10 @@
 package lam.cobia.registry.impl;
 
-import lam.cobia.config.spring.CRegistryBean;
-import lam.cobia.core.constant.Constant;
 import lam.cobia.core.exception.CobiaException;
-import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.ParamConstant;
-import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.registry.AbstractRegistryConsumer;
-import lam.cobia.registry.RegistryConsumer;
 import lam.cobia.registry.RegistrySubcriber;
-import lam.cobia.spi.ServiceFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

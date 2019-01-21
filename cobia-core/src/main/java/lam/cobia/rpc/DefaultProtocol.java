@@ -1,7 +1,9 @@
 package lam.cobia.rpc;
 
 import lam.cobia.cluster.AbstractCluster;
+import lam.cobia.config.spring.CRefrenceBean;
 import lam.cobia.config.spring.CRegistryBean;
+import lam.cobia.config.spring.CServiceBean;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.NetUtil;
 import lam.cobia.core.util.ParamConstant;
@@ -26,7 +28,13 @@ import lam.cobia.remoting.ExchangeServer;
 import lam.cobia.remoting.HeaderExchangeServer;
 import lam.cobia.remoting.transport.netty.NettyClient;
 import lam.cobia.remoting.transport.netty.NettyServer;
+import lam.cobia.rpc.chain.ProviderChainWrapper;
+import lam.cobia.rpc.support.Consumer;
+import lam.cobia.rpc.support.Exporter;
+import lam.cobia.rpc.support.Protocol;
+import lam.cobia.rpc.support.Provider;
 import lam.cobia.spi.ServiceFactory;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
 * <p>
@@ -36,52 +44,46 @@ import lam.cobia.spi.ServiceFactory;
 * @date 2017年12月18日
 * @version 1.0
 */
-public class DefaultProtocol implements Protocol{
+public class DefaultProtocol implements Protocol {
 
-	private final Object sharedObject;
+	private final Object sharedObject = new Object();
 	
-	private ConcurrentMap<Consumer<?>, Object> consumerMap;
+	private final ConcurrentMap<Consumer<?>, Object> consumerMap = new ConcurrentHashMap<>();
 	
-	private ConcurrentMap<String, Exporter<?>> exporterMap;
+	private final ConcurrentMap<String, Exporter<?>> exporterMap = new ConcurrentHashMap<>();
 	
-	private ConcurrentMap<String, ExchangeServer> serverMap;
+	private final ConcurrentMap<String, ExchangeServer> serverMap = new ConcurrentHashMap<>();
 	
-	private ConcurrentMap<Integer, lam.cobia.remoting.transport.netty.NettyServer> nettyMap;
+	private final ConcurrentMap<Integer, lam.cobia.remoting.transport.netty.NettyServer> nettyMap = new ConcurrentHashMap<>();
 	
-	private ConcurrentMap<InetSocketAddress, lam.cobia.remoting.Client> clientsMap;
+	private final ConcurrentMap<InetSocketAddress, lam.cobia.remoting.Client> clientsMap = new ConcurrentHashMap<>();
 	
 	public DefaultProtocol() {
-		this.sharedObject = new Object();
-		this.consumerMap = new ConcurrentHashMap<Consumer<?>, Object>();
-		this.exporterMap = new ConcurrentHashMap<String, Exporter<?>>();
-		this.serverMap = new ConcurrentHashMap<String, ExchangeServer>();
-		this.nettyMap = new ConcurrentHashMap<Integer, lam.cobia.remoting.transport.netty.NettyServer>();
-		this.clientsMap = new ConcurrentHashMap<InetSocketAddress, lam.cobia.remoting.Client>();
 	}
 
-	
 	@Override
-	public <T> Exporter<T> export(Provider<T> provider, Map<String, Object> params) {
+	public <T> Exporter<T> export(Provider<T> provider, CServiceBean<T> serviceBean) {
+		boolean balanced  = BooleanUtils.toBooleanDefaultIfNull(serviceBean.getBalanced(), false);
+		ProviderChainWrapper<T> providerChainWrapper = balanced ? new BalancedProvider<T>(provider) : new ProviderChainWrapper<>(provider, null);
 
-	    DefaultExporter<T> exporter = new DefaultExporter<T>(provider, provider.getKey());
+	    DefaultExporter<T> exporter = new DefaultExporter<T>(providerChainWrapper);
 
 	    exporterMap.put(provider.getKey(), exporter);
 	    
 	    openServer(provider);
 
-		String host = NetUtil.getLocalHost();
-		int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
-		HostAndPort hap = new HostAndPort().setHost(host).setPort(port);
+		final int port = ParameterUtil.getParameterInt(Constant.KEY_PORT, Constant.DEFAULT_SERVER_PORT);
+		HostAndPort hap = new HostAndPort().setHost(NetUtil.getLocalHost()).setPort(port);
 	    //do work: registry provider
-		CRegistryBean.getRegistryProvider().registry(provider, hap, params);
+		CRegistryBean.getRegistryProvider().registry(provider, hap, serviceBean.getParams());
 	    
 		return exporter;
 	}
 
 	@Override
-	public <T> Consumer<T> refer(Class<T> clazz, Map<String, Object> params) {
+	public <T> Consumer<T> refer(Class<T> clazz, CRefrenceBean<T> refrenceBean) {
 
-		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
+		LoadBalance loadBalance = ServiceFactory.takeInstance(refrenceBean.getLoadbalance(), LoadBalance.class);
 		AbstractCluster<T> cluster = new FailoverCluster<T>();
 
 		//get provider list of interface:clazz, and registry subcriber to consumer client.
@@ -89,8 +91,8 @@ public class DefaultProtocol implements Protocol{
 
 		List<Consumer<T>> consumers = new ArrayList<Consumer<T>>();
 		for (RegistryData registryData : list) {
-			params.put(ParamConstant.WEIGHT, registryData.getWeight());
-			Consumer<T> consumer = new DefaultConsumer<T>(clazz, params, getClient(registryData), registryData);
+			refrenceBean.getParams().put(ParamConstant.WEIGHT, registryData.getWeight());
+			Consumer<T> consumer = new DefaultConsumer<T>(clazz, refrenceBean.getParams(), getClient(registryData), registryData);
 			consumerMap.put(consumer, sharedObject);
 			consumers.add(consumer);
 		}

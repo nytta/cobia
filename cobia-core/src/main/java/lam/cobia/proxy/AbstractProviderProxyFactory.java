@@ -1,6 +1,7 @@
 package lam.cobia.proxy;
 
-import lam.cobia.rpc.Provider;
+import lam.cobia.config.spring.CServiceBean;
+import lam.cobia.rpc.support.Provider;
 
 /**
  * @description: AbstractProviderProxyFactory
@@ -10,5 +11,5 @@ import lam.cobia.rpc.Provider;
  */
 public abstract class AbstractProviderProxyFactory implements ProviderProxyFactory{
     @Override
-    public abstract <T> Provider<T> getProvider(T ref, Class<T> clazz);
+    public abstract <T> Provider<T> getProvider(T ref, Class<T> clazz, CServiceBean<T> serviceBean);
 }

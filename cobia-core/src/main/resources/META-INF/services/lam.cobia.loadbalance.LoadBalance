@@ -1,1 +1,2 @@
 random=lam.cobia.loadbalance.impl.RandomLoadBalance
+server=lam.cobia.loadbalance.impl.ServerLoadBalance

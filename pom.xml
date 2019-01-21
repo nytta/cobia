@@ -7,9 +7,10 @@
   <groupId>lam</groupId>
   <artifactId>lam-cobia</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.5</version>
+  <version>0.0.6</version>
   <modules>
     <module>cobia-core</module>
+    <module>cobia-demo</module>
   </modules>
 
   <name>lam-cobia</name>

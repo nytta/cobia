@@ -1,10 +1,10 @@
 package lam.cobia.proxy.impl;
 
+import lam.cobia.config.spring.CServiceBean;
 import lam.cobia.core.exception.CobiaException;
 import lam.cobia.proxy.AbstractProviderProxyFactory;
-import lam.cobia.proxy.ProviderProxyFactory;
 import lam.cobia.rpc.AbstractProvider;
-import lam.cobia.rpc.Provider;
+import lam.cobia.rpc.support.Provider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,8 +17,8 @@ import java.lang.reflect.Method;
  */
 public class JdkProviderProxyFactory extends AbstractProviderProxyFactory {
     @Override
-    public <T> Provider<T> getProvider(T ref, Class<T> clazz) {
-        Provider<T> provider = new AbstractProvider<T>(ref, clazz) {
+    public <T> Provider<T> getProvider(T ref, Class<T> clazz, CServiceBean<T> serviceBean) {
+        Provider<T> provider = new AbstractProvider<T>(ref, clazz, serviceBean) {
             @Override
             protected Object doInvoke(T proxy, String method, Class<?>[] parameterTypes, Object[] arguments) {
                 try {

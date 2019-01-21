@@ -3,6 +3,8 @@ package lam.cobia.rpc;
 import java.io.Serializable;
 import java.util.Objects;
 
+import lam.cobia.rpc.support.Result;
+
 /**
 * <p>
 * default result

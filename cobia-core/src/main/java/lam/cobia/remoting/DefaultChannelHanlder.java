@@ -4,10 +4,11 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
 
 import lam.cobia.core.exception.CobiaException;
-import lam.cobia.log.Console;
 import lam.cobia.rpc.DefaultInvocation;
-import lam.cobia.rpc.Exporter;
-import lam.cobia.rpc.Result;
+import lam.cobia.rpc.support.Exporter;
+import lam.cobia.rpc.support.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 * <p>
@@ -19,6 +20,8 @@ import lam.cobia.rpc.Result;
 */
 public class DefaultChannelHanlder implements ChannelHandler{
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultChannelHanlder.class);
+
 	//private Invoker<?> invoker;
 	private ConcurrentMap<String, Exporter<?>> exporterMap;
 
@@ -29,7 +32,7 @@ public class DefaultChannelHanlder implements ChannelHandler{
 	
 	@Override
 	public void received(Channel channel, Object msg) {
-		Console.println(channel + ">>>" + msg);
+		LOGGER.debug("[received] Channel:" + channel + ", msg:" + msg);
 		if (msg instanceof Request) {
 			Request request = (Request) msg;
 

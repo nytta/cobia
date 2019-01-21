@@ -1,10 +1,8 @@
 package lam.cobia.config.spring;
 
-import java.util.Map;
-
 import lam.cobia.proxy.ConsumerProxyFactory;
-import lam.cobia.rpc.Consumer;
-import lam.cobia.rpc.Protocol;
+import lam.cobia.rpc.support.Consumer;
+import lam.cobia.rpc.support.Protocol;
 import lam.cobia.spi.ServiceFactory;
 
 /**
@@ -22,8 +20,8 @@ public class CobiaReference implements Reference{
 	private ConsumerProxyFactory consumerProxyFactory = ServiceFactory.takeDefaultInstance(ConsumerProxyFactory.class);
 	
 	@Override
-	public <T> T refer(Class<T> clazz, Map<String, Object> params) {
-		Consumer<T> consumer = protocol.refer(clazz, params);
+	public <T> T refer(Class<T> clazz, CRefrenceBean<T> refrenceBean) {
+		Consumer<T> consumer = protocol.refer(clazz, refrenceBean);
 
 		T t = consumerProxyFactory.getConsumerProxy(consumer);
 		return t;

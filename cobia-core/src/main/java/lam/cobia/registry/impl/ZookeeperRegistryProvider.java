@@ -1,27 +1,23 @@
 package lam.cobia.registry.impl;
 
-import lam.cobia.config.spring.CRegistryBean;
 import lam.cobia.core.exception.CobiaException;
 import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.GsonUtil;
+import lam.cobia.core.util.NetUtil;
 import lam.cobia.core.util.ParamConstant;
 import lam.cobia.core.util.ParameterUtil;
 import lam.cobia.registry.AbstractRegistryProvider;
-import lam.cobia.registry.RegistryProvider;
-import lam.cobia.rpc.Provider;
-import lam.cobia.spi.ServiceFactory;
+import lam.cobia.rpc.support.Provider;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.ZkConnection;
-import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
-import org.I0Itec.zkclient.serialize.ZkSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,7 +44,7 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
             return ;
         }
         final int connectionTimeout = Integer.MAX_VALUE;
-        this.zkClient = new ZkClient(buildZkConnection(), connectionTimeout, buildZkSerializer());
+        this.zkClient = new ZkClient(buildZkConnection(), connectionTimeout, new ZookeeperDefaultSerializer());
         LOGGER.info("[initZkClient] zkClient");
     }
 
@@ -61,33 +57,6 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
         ZkConnection zkConnection = new ZkConnection(address, sessionTimeout);
         LOGGER.info("[buildZkConnection] build ZkConnection address:" + address + ", sessionTimeout:" + sessionTimeout + " success.");
         return zkConnection;
-    }
-
-    private ZkSerializer buildZkSerializer() {
-        ZkSerializer zkSerializer = new ZkSerializer() {
-            String charsetName = "utf-8";
-            @Override
-            public byte[] serialize(Object data) throws ZkMarshallingError {
-                try {
-                    return ((String)data).getBytes(charsetName);
-                } catch (UnsupportedEncodingException e) {
-                    LOGGER.error("[buildZkSerializer] unsupport encoding " + charsetName, e);
-                    return null;
-                }
-            }
-
-            @Override
-            public Object deserialize(byte[] bytes) throws ZkMarshallingError {
-                try {
-                    return new String(bytes, charsetName);
-                } catch (UnsupportedEncodingException e) {
-                    LOGGER.error("[buildZkSerializer] unsupport encoding " + charsetName, e);
-                    return null;
-                }
-            }
-        };
-        LOGGER.info("[buildZkSerializer] build ZkSerializer success.");
-        return zkSerializer;
     }
 
     @Override
@@ -124,7 +93,7 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
         registryData.setPort(hap.getPort());
         registryData.setWeight(weight);
 
-        Object data = GsonUtil.toJson(registryData);
+        Object data = GsonUtil.toNotNullJson(registryData);
         boolean nodeExists = false;
         try {
             path = zkClient.create(path, data, CreateMode.EPHEMERAL);
@@ -146,5 +115,40 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
                         + ", but path has exists, data:" + oldData);
         }
         return !nodeExists;
+    }
+
+    @Override
+    public <T> void onProviderDataChanges(Provider<T> provider, RegistryData registryData) {
+        final String path = String.format("%s/%s/%s:%d",
+                ZOOKEEPER_ROOT_PATH, provider.getInterface().getName(), registryData.getHost(), registryData.getPort());
+        String data = GsonUtil.toNotNullJson(registryData);
+        try {
+            zkClient.writeData(path, data);
+            LOGGER.debug("[onProviderDataChanges] interface:{}, RegistryData:{}, config of provider update to registry center success."
+                    , provider.getInterface().getName(), registryData);
+        } catch (Exception e) {
+            LOGGER.error("[onProviderDataChanges] Provider:{}, RegistryData:{}", provider, registryData);
+        }
+    }
+
+    @Override
+    public <T> RegistryData readRegistryData(Provider<T> provider) {
+        final String parentPath = String.format("%s/%s", ZOOKEEPER_ROOT_PATH, provider.getInterface().getName());
+        String path = null;
+        List<String> children = zkClient.getChildren(parentPath);
+
+        for (String child : children) {
+            int index = child.indexOf(':');
+            if (index != -1 && NetUtil.getLocalHost().equals(child.substring(0, index))) {
+                path = child;
+            }
+        }
+        RegistryData registryData = null;
+        if (path != null) {
+            String json = zkClient.readData(path);
+            registryData = GsonUtil.fromJson(json, RegistryData.class);
+        }
+        LOGGER.debug("[readRegistryData] provider:{}, path:{}, RegistryData:{}", provider, path, GsonUtil.toJson(registryData));
+        return registryData;
     }
 }

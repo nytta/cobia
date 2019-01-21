@@ -5,7 +5,8 @@ import lam.cobia.core.model.RegistryData;
 import lam.cobia.core.util.GsonUtil;
 import lam.cobia.core.util.NetUtil;
 import lam.cobia.remoting.*;
-import org.springframework.util.CollectionUtils;
+import lam.cobia.rpc.support.Invocation;
+import lam.cobia.rpc.support.Result;
 
 import java.util.Map;
 

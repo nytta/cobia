@@ -56,6 +56,12 @@ public class CServiceBean<T> extends AbstractConfig
 
 	@ParamAnnotation
 	private String registry = "zookeeper"; //default registry:zookeeper
+
+	/**
+	 * to determine whether balance service provider list.
+	 */
+	@ParamAnnotation
+	private Boolean balanced = Boolean.FALSE;
 	
 	//=============
 	
@@ -90,7 +96,7 @@ public class CServiceBean<T> extends AbstractConfig
 		LOGGER.info(event.getClass().getName());
 		if (ContextRefreshedEvent.class.getName().equals(event.getClass().getName())) {
 			//do export bean
-			ServiceFactory.takeDefaultInstance(Service.class).export(getRef(), (Class<T>) interfaceClass, super.getParams());
+			ServiceFactory.takeDefaultInstance(Service.class).export(getRef(), (Class<T>) interfaceClass, this);
 		}
 	}
 	
@@ -155,6 +161,14 @@ public class CServiceBean<T> extends AbstractConfig
 
 	public void setRegistry(String registry) {
 		this.registry = registry;
+	}
+
+	public Boolean getBalanced() {
+		return balanced;
+	}
+
+	public void setBalanced(Boolean balanced) {
+		this.balanced = balanced;
 	}
 
 	@Override
