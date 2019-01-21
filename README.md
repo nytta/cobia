@@ -17,6 +17,10 @@
 |weight|optional|int|weight to invoke the service|
 |balanced|optional|boolean|default: false, to detemine whether provider list join loadbalance work of consumer|
 
+#### Important Note
+`balanced` should be set to the same value for the same provider, even if providers may be distributed across 
+different nodes.
+
 ### <cobia:reference /> 
 
 | name |optional | type | description|
