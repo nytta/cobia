@@ -84,8 +84,6 @@ public class DefaultProtocol implements Protocol {
 	public <T> Consumer<T> refer(Class<T> clazz, CRefrenceBean<T> refrenceBean) {
 
 		LoadBalance loadBalance = ServiceFactory.takeInstance(refrenceBean.getLoadbalance(), LoadBalance.class);
-		// TODO 2019-01-21 need to check that whether provider supports special loadbalance mode.
-
 		AbstractCluster<T> cluster = new FailoverCluster<T>();
 
 		//get provider list of interface:clazz, and registry subcriber to consumer client.

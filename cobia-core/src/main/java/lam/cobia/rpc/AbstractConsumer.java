@@ -53,7 +53,7 @@ public abstract class AbstractConsumer<T> implements Consumer<T> {
 	public Result invoke(Invocation invocation) {
 		return doInvoke(invocation);
 	}
-	
+
 	@Override
 	public void close() {
 		
