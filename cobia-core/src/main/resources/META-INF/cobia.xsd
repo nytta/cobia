@@ -62,6 +62,11 @@
 							<xsd:documentation><![CDATA[ server(format:host:port) of provider service. ]]></xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
+					<xsd:attribute name="loadbalance" type="xsd:string" use="optional">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[ loadbalance mode of consumer, which optional value has random, server and so on, default value is random. ]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>

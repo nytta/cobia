@@ -9,7 +9,7 @@
 
 	<cobia:registry type="direct" address="127.0.0.1:4325"/>
 
-	<cobia:reference id="myService" interface="lam.cobia.demo.service.IMyService" registry="direct" serviceServer="127.0.0.1:4325"/>
+	<cobia:reference id="myService" interface="lam.cobia.demo.service.IMyService" loadbalance="" registry="direct" serviceServer="127.0.0.1:4325"/>
 	
 	<cobia:reference id="yourService" interface="lam.cobia.demo.service.IYourService" registry="direct" serviceServer="127.0.0.1:4325"/>
 	

@@ -15,6 +15,7 @@
 |ref|required|string|bean id of service|
 |registry|optional|string|registry address|
 |weight|optional|int|weight to invoke the service|
+|balanced|optional|boolean|default: false, to detemine whether provider list join loadbalance work of consumer|
 
 ### <cobia:reference /> 
 
@@ -24,6 +25,7 @@
 |interface|required|string|Interface of reference|
 |registry|optional|string|registry method:direct, zookeeper|
 |serviceServer|optional|string|`serviceServer` value is provider address(host:port) when `registry` is direct|
+|loadbalance|optional|string|loadbalance mode of consumer, which optional value has random, server and so on, default value is `random`.|
 
 ### <cobia:registry />
 

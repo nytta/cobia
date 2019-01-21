@@ -83,8 +83,7 @@ public class DefaultProtocol implements Protocol {
 	@Override
 	public <T> Consumer<T> refer(Class<T> clazz, CRefrenceBean<T> refrenceBean) {
 
-		// TODO take LoadBalance according to the config, not takeDefaultInstance(..)
-		LoadBalance loadBalance = ServiceFactory.takeDefaultInstance(LoadBalance.class);
+		LoadBalance loadBalance = ServiceFactory.takeInstance(refrenceBean.getLoadbalance(), LoadBalance.class);
 		AbstractCluster<T> cluster = new FailoverCluster<T>();
 
 		//get provider list of interface:clazz, and registry subcriber to consumer client.
