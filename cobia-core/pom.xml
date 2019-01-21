@@ -5,7 +5,7 @@
     <parent>
         <artifactId>lam-cobia</artifactId>
         <groupId>lam</groupId>
-        <version>0.0.6-SNAPSHOT</version>
+        <version>0.0.6</version>
     </parent>
 
     <artifactId>cobia-core</artifactId>
