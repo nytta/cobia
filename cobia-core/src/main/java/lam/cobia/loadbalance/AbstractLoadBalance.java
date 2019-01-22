@@ -13,6 +13,8 @@ import java.util.List;
  */
 public abstract class AbstractLoadBalance implements LoadBalance{
 
+    protected String name;
+
     @Override
     public <T> Consumer<T> select(List<Consumer<T>> consumers, Invocation invocation) {
         Consumer<T> consumer = doSelect(consumers, invocation);

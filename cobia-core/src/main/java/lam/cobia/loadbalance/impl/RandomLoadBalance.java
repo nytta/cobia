@@ -15,6 +15,11 @@ import java.util.Random;
  * @version: 1.0
  */
 public class RandomLoadBalance extends AbstractLoadBalance {
+
+    public RandomLoadBalance() {
+        super.name = "random";
+    }
+
     @Override
     public <T> Consumer<T> doSelect(List<Consumer<T>> consumers, Invocation invocation) {
         int totalWeight = 0;
