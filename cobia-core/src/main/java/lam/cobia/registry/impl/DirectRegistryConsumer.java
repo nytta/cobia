@@ -56,7 +56,7 @@ public class DirectRegistryConsumer extends AbstractRegistryConsumer {
         hap.setWeight(ParamConstant.WEIGHT_DEFAULT);
         list.add(hap);
 
-        LOGGER.info("[getProviders] interface:{}, provider list:{}", interfaceClass.getName(), list);
+        LOGGER.debug("[getProviders] interface:{}, provider list:{}", interfaceClass.getName(), list);
 
         return list;
     }

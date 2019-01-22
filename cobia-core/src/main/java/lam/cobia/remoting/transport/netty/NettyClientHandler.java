@@ -5,7 +5,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
-import lam.cobia.log.Console;
 import lam.cobia.remoting.DefaultFuture;
 import lam.cobia.remoting.Response;
 import lam.cobia.remoting.codec.Packet;
@@ -84,7 +83,6 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         //ctx.fireChannelRead(msg);
     	lam.cobia.remoting.Channel channel = NettyChannel.getChannel(ctx.channel());
-    	Console.println(channel + " receive >>>" + msg);
     	
 		Packet packet = (Packet) msg;
 		if (packet.getLength() > 0) {

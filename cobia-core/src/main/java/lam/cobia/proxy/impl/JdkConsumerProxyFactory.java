@@ -6,8 +6,6 @@ import lam.cobia.rpc.support.Consumer;
 import lam.cobia.rpc.DefaultInvocation;
 import lam.cobia.rpc.support.Invocation;
 import lam.cobia.rpc.support.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -20,8 +18,6 @@ import java.lang.reflect.Proxy;
  * @version: 1.0
  */
 public class JdkConsumerProxyFactory extends AbstractConsumerProxyFactory {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JdkConsumerProxyFactory.class);
 
     @Override
     public <T> T getConsumerProxy(Consumer<T> consumer, Class<?>[] interfaces) {
@@ -45,8 +41,7 @@ public class JdkConsumerProxyFactory extends AbstractConsumerProxyFactory {
                     .setMethod(method.getName())
                     .setParamenterTypes(method.getParameterTypes())
                     .setArguments(args);
-            LOGGER.debug("interface:{}, method:{}, parameterTypes:{}, arguments:{}",
-                    consumer.getInterface().getName(), method.getName(), method.getParameterTypes(), args);
+
             Result result = consumer.invoke(invocation);
             if (result == null) {
                 throw new CobiaException("result == null");

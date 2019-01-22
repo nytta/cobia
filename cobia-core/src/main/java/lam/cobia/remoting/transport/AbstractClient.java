@@ -33,7 +33,7 @@ public abstract class AbstractClient implements Client{
 		}
 		try {
 			onOpen();
-			logger.info("client connect to " + NetUtil.parseToString(remoteAddress) + " success.");
+			logger.debug("client connect to " + NetUtil.parseToString(remoteAddress) + " success.");
 		} catch (Exception e) {
 			logger.error("client open connect to server[" + NetUtil.parseToString(remoteAddress) + "] fail.");
 			e.printStackTrace();
