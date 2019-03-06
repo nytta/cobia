@@ -2,7 +2,7 @@
 
 ## TODO
 
-- do some improvement work like
+- override logger module and support `nacos` registration. 
 
 ## cobia tag
 
