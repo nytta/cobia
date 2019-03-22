@@ -4,6 +4,8 @@ import java.util.Map;
 
 import lam.cobia.core.model.HostAndPort;
 import lam.cobia.core.model.RegistryData;
+import lam.cobia.log.Logger;
+import lam.cobia.log.LoggerFactory;
 import lam.cobia.registry.AbstractRegistryProvider;
 import lam.cobia.rpc.support.Provider;
 
@@ -12,6 +14,9 @@ import lam.cobia.rpc.support.Provider;
  * @date 2019/3/22
  */
 public class NacosRegistryProvider extends AbstractRegistryProvider {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NacosRegistryProvider.class);
+
     @Override
     public <T> boolean registry(final Provider<T> provider, final HostAndPort hap, final Map<String, Object> params) {
         // TODO
