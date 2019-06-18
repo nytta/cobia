@@ -5,6 +5,7 @@ import lam.cobia.core.util.GsonUtil;
 import lam.cobia.loadbalance.AbstractLoadBalance;
 import lam.cobia.rpc.support.Consumer;
 import lam.cobia.rpc.support.Invocation;
+import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -41,13 +42,15 @@ public class LeastActiveLoadBalance extends AbstractLoadBalance {
         long leastInvokedCount = Long.MAX_VALUE;
         for (int index = 0; index < consumers.size(); index++) {
             Consumer<T> consumer = consumers.get(index);
-            if (consumer.getRegistryData().getInvokedCount() < leastInvokedCount) {
-                leastInvokedCount = consumer.getRegistryData().getInvokedCount();
-                indexs.clear();
-                indexs.add(index);
-            } else if (consumer.getRegistryData().getInvokedCount() == leastInvokedCount) {
-                // 有相同的invokedCount
-                indexs.add(index);
+            if (BooleanUtils.isTrue(consumer.getRegistryData().getServiceBalanced())) {
+                if (consumer.getRegistryData().getInvokedCount() < leastInvokedCount) {
+                    leastInvokedCount = consumer.getRegistryData().getInvokedCount();
+                    indexs.clear();
+                    indexs.add(index);
+                } else if (consumer.getRegistryData().getInvokedCount() == leastInvokedCount) {
+                    // 有相同的invokedCount
+                    indexs.add(index);
+                }
             }
         }
 

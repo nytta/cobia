@@ -1,5 +1,7 @@
 package lam.cobia.core.util;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import java.util.Map;
 
 /**
@@ -94,6 +96,22 @@ public class ParameterUtil {
 				return defaultValue;
 			}
 			return Boolean.parseBoolean(value);
+		} catch (Exception e) {
+			return defaultValue;
+		}
+	}
+
+	public static boolean getParameterBoolean(String key, Map<String, Object> params, boolean defaultValue) {
+		try {
+			String value = getParameter(key);
+			if (value == null) {
+				return defaultValue;
+			}
+			final Object obj = params.get(key);
+			if (obj == null) {
+				return Boolean.parseBoolean(value);
+			}
+			return BooleanUtils.toBoolean(obj.toString());
 		} catch (Exception e) {
 			return defaultValue;
 		}

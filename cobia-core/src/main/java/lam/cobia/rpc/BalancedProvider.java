@@ -23,7 +23,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
- * @author: linanmiao
+ * @author linanmiao
  */
 public class BalancedProvider<T> extends ProviderChainWrapper implements DisposableBean {
 

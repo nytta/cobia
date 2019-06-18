@@ -87,8 +87,10 @@ public class ZookeeperRegistryProvider extends AbstractRegistryProvider {
             }
         }
         int weight = ParameterUtil.getParameterInt(ParamConstant.WEIGHT, params, ParamConstant.WEIGHT_DEFAULT);
+        final boolean balanced = ParameterUtil.getParameterBoolean(ParamConstant.BALANCED, params, ParamConstant.BALANCED_DEFAULT);
 
         RegistryData registryData = new RegistryData();
+        registryData.setServiceBalanced(balanced);
         registryData.setHost(hap.getHost());
         registryData.setPort(hap.getPort());
         registryData.setWeight(weight);
